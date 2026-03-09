@@ -1,0 +1,54 @@
+[
+  {
+    "alert_id": "ALT-0001",
+    "date": "2026-01-16",
+    "metric": "nps",
+    "dimension_json": {
+      "market": "UK",
+      "queue": "tier1"
+    },
+    "direction": "down",
+    "magnitude": 3.2,
+    "alert_type": "kpi_drop",
+    "z_score": 3.2,
+    "status": "open",
+    "explanation": "NPS drop: current=10.0, baseline=31.5, change=68.3%, z-score=3.20",
+    "playbook_en": "KPI metric drop. Actions: 1) Root cause analysis, 2) Service quality review, 3) Operational improvements",
+    "playbook_cs": "Pokles KPI metriky. Akce: 1) Anal\u00fdza p\u0159\u00ed\u010din, 2) P\u0159ezkoum\u00e1n\u00ed kvality, 3) Operativn\u00ed zlep\u0161en\u00ed",
+    "notes": "Correlated with delivery delay spike"
+  },
+  {
+    "alert_id": "ALT-0002",
+    "date": "2026-01-17",
+    "metric": "volume",
+    "dimension_json": {
+      "market": "UK"
+    },
+    "direction": "up",
+    "magnitude": 2.8,
+    "alert_type": "volume_spike",
+    "z_score": 2.8,
+    "status": "open",
+    "explanation": "volume spike: current=720, baseline=487.2, change=47.8%, z-score=2.80",
+    "playbook_en": "High volume spike detected. Consider: 1) Check for product/service incident, 2) Increase staffing, 3) Prepare FAQ/bot responses",
+    "playbook_cs": "Detekov\u00e1n spike objemu. Zva\u017ete: 1) Zkontrolujte produkt/slu\u017ebu, 2) Zvy\u0161te obsazen\u00ed, 3) P\u0159ipravte odpov\u011bdi FAQ/bota",
+    "notes": ""
+  },
+  {
+    "alert_id": "ALT-0003",
+    "date": "2026-02-07",
+    "metric": "nps",
+    "dimension_json": {
+      "market": "UK"
+    },
+    "direction": "down",
+    "magnitude": 3.5,
+    "alert_type": "kpi_drop",
+    "z_score": 3.5,
+    "status": "open",
+    "explanation": "NPS drop: current=8.0, baseline=32.4, change=75.3%, z-score=3.50",
+    "playbook_en": "KPI metric drop. Actions: 1) Root cause analysis, 2) Service quality review, 3) Operational improvements",
+    "playbook_cs": "Pokles KPI metriky. Akce: 1) Anal\u00fdza p\u0159\u00ed\u010din, 2) P\u0159ezkoum\u00e1n\u00ed kvality, 3) Operativn\u00ed zlep\u0161en\u00ed",
+    "notes": "Delivery delay issues in UK market"
+  }
+]

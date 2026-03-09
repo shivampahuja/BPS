@@ -1,0 +1,150 @@
+{
+  "app_title": "Platforma pro analýzu zákaznických interakcí",
+  "app_subtitle": "Rozhodnutí připravené přehledy z každé zákaznické interakce",
+  "tabs": {
+    "overview": "Přehled",
+    "themes": "Průzkum témat",
+    "sentiment": "Sentiment & DSAT",
+    "operations": "Operace (CSC)",
+    "digital": "Digitální & Automatizace",
+    "nps_join": "Pohled NPS",
+    "upload": "Nahrání & Taxonomie",
+    "settings": "Nastavení",
+    "export": "Export",
+    "evaluation": "Hodnocení"
+  },
+  "overview": {
+    "title": "Přehled dashboardu",
+    "kpi_volume": "Celkem interakcí",
+    "kpi_nps": "Skóre NPS",
+    "kpi_csat": "CSAT",
+    "kpi_sentiment": "Průměrný sentiment",
+    "kpi_dsat_rate": "Míra DSAT",
+    "kpi_aht": "Průměrná doba zpracování",
+    "alerts_title": "Aktivní upozornění",
+    "trend_title": "Trend objemu interakcí",
+    "top_topics_title": "Nejčastější témata"
+  },
+  "themes": {
+    "title": "Průzkum témat",
+    "filter_domain": "Filtrovat dle domény",
+    "filter_lang": "Filtrovat dle jazyka",
+    "filter_market": "Filtrovat dle trhu",
+    "filter_channel": "Filtrovat dle kanálu",
+    "topic_volume": "Objem",
+    "topic_sentiment": "Sentiment",
+    "topic_nps": "NPS tématu",
+    "drill_into": "Přejít do tématu",
+    "sample_interactions": "Ukázkové interakce",
+    "explain_btn": "Vysvětlit téma",
+    "behavior_overlay": "Překryv chování",
+    "compliance_overlay": "Příznaky souladu"
+  },
+  "sentiment": {
+    "title": "Analýza sentimentu a DSAT",
+    "distribution_title": "Rozdělení sentimentu",
+    "dsat_rate": "Míra DSAT",
+    "dsat_drivers": "Faktory DSAT",
+    "negative_verbatims": "Průzkum negativních komentářů",
+    "by_channel": "Dle kanálu",
+    "by_market": "Dle trhu",
+    "by_topic": "Dle tématu"
+  },
+  "operations": {
+    "title": "Operační dashboard (CSC)",
+    "behaviors_title": "Frekvence chování",
+    "compliance_title": "Příznaky souladu",
+    "by_queue": "Dle fronty",
+    "by_vendor": "Dle dodavatele",
+    "by_market": "Dle trhu",
+    "fcr_rate": "Míra FCR",
+    "escalation_rate": "Míra eskalace",
+    "repeat_rate": "Míra opakovaného kontaktu",
+    "replacements": "Trend výměn"
+  },
+  "digital": {
+    "title": "Digitální & Automatizace",
+    "automation_candidates": "Kandidáti pro automatizaci",
+    "manned_vs_digital": "Obsazené vs digitální podíly",
+    "vca_containment": "Míra zadržení VCA",
+    "export_backlog": "Exportovat nevyřízené automatizace",
+    "faq_bot_backlog": "Backlog FAQ / Bot / VCA"
+  },
+  "nps": {
+    "title": "Pohled NPS",
+    "topic_nps": "NPS tématu",
+    "topic_sentiment": "Sentiment tématu",
+    "ces_link": "Odkaz CES",
+    "detractor_drivers": "Faktory kritiků",
+    "promoter_drivers": "Faktory propagátorů"
+  },
+  "upload": {
+    "title": "Nahrání & Taxonomie",
+    "upload_csv": "Nahrát CSV/JSON",
+    "upload_audio": "Nahrát zvuk (WAV/MP3)",
+    "run_pipeline": "Spustit pipeline",
+    "edit_seeds": "Upravit klíčová slova",
+    "retrain_topics": "Přetrénovat témata",
+    "taxonomy_version": "Verze taxonomie",
+    "pipeline_status": "Stav pipeline"
+  },
+  "settings": {
+    "title": "Nastavení",
+    "asr_model": "Model ASR",
+    "embed_model": "Model vkládání",
+    "language": "Jazyk",
+    "pii_policy": "Zásady PII",
+    "pii_entities": "Entity PII"
+  },
+  "export": {
+    "title": "Export",
+    "download_csv": "Stáhnout CSV",
+    "download_json": "Stáhnout JSON",
+    "copy_chart": "Kopírovat graf",
+    "capa_list": "Seznam CAPA",
+    "automation_backlog": "Backlog automatizace"
+  },
+  "evaluation": {
+    "title": "Hodnocení & Kritéria přijetí",
+    "asr_wer": "Míra chyb slov ASR",
+    "topic_coherence": "Koherence témat",
+    "sentiment_metrics": "Přesnost/Úplnost sentimentu",
+    "behavior_metrics": "Přesnost/Úplnost chování",
+    "anomaly_backtest": "Zpětné testování anomálií",
+    "privacy_audit": "Audit soukromí"
+  },
+  "pipeline": {
+    "running": "Pipeline běží...",
+    "complete": "Pipeline dokončena",
+    "error": "Chyba pipeline",
+    "pii_step": "Redakce PII",
+    "embed_step": "Vkládání",
+    "topics_step": "Modelování témat",
+    "sentiment_step": "Analýza sentimentu",
+    "behaviors_step": "Detekce chování",
+    "anomaly_step": "Detekce anomálií",
+    "impact_step": "Analýza dopadu"
+  },
+  "common": {
+    "search": "Hledat",
+    "filter": "Filtrovat",
+    "sort": "Seřadit",
+    "export": "Exportovat",
+    "refresh": "Obnovit",
+    "save": "Uložit",
+    "cancel": "Zrušit",
+    "confirm": "Potvrdit",
+    "loading": "Načítání...",
+    "no_data": "Žádná data k dispozici",
+    "error": "Chyba",
+    "success": "Úspěch",
+    "all": "Vše",
+    "volume": "Objem",
+    "sentiment": "Sentiment",
+    "market": "Trh",
+    "channel": "Kanál",
+    "date_range": "Časové rozmezí",
+    "from_date": "Od",
+    "to_date": "Do"
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "app_title": "Consumer Interaction Intelligence",
+  "app_subtitle": "Decision-ready insights from every customer interaction",
+  "tabs": {
+    "overview": "Overview",
+    "themes": "Themes Explorer",
+    "sentiment": "Sentiment & DSAT",
+    "operations": "Operations (CSC)",
+    "digital": "Digital & Automation",
+    "nps_join": "NPS Join View",
+    "upload": "Upload & Taxonomy",
+    "settings": "Settings",
+    "export": "Export",
+    "evaluation": "Evaluation"
+  },
+  "overview": {
+    "title": "Dashboard Overview",
+    "kpi_volume": "Total Interactions",
+    "kpi_nps": "NPS Score",
+    "kpi_csat": "CSAT",
+    "kpi_sentiment": "Avg Sentiment",
+    "kpi_dsat_rate": "DSAT Rate",
+    "kpi_aht": "Avg Handle Time",
+    "alerts_title": "Active Alerts",
+    "trend_title": "Interaction Volume Trend",
+    "top_topics_title": "Top Topics by Volume"
+  },
+  "themes": {
+    "title": "Themes Explorer",
+    "filter_domain": "Filter by Domain",
+    "filter_lang": "Filter by Language",
+    "filter_market": "Filter by Market",
+    "filter_channel": "Filter by Channel",
+    "topic_volume": "Volume",
+    "topic_sentiment": "Sentiment",
+    "topic_nps": "Topic NPS",
+    "drill_into": "Drill into topic",
+    "sample_interactions": "Sample Interactions",
+    "explain_btn": "Explain Theme",
+    "behavior_overlay": "Behavior Overlay",
+    "compliance_overlay": "Compliance Flags"
+  },
+  "sentiment": {
+    "title": "Sentiment & DSAT Analysis",
+    "distribution_title": "Sentiment Distribution",
+    "dsat_rate": "DSAT Rate",
+    "dsat_drivers": "DSAT Drivers",
+    "negative_verbatims": "Negative Verbatim Explorer",
+    "by_channel": "By Channel",
+    "by_market": "By Market",
+    "by_topic": "By Topic"
+  },
+  "operations": {
+    "title": "Operations Dashboard (CSC)",
+    "behaviors_title": "Behavior Frequencies",
+    "compliance_title": "Compliance Flags",
+    "by_queue": "By Queue",
+    "by_vendor": "By Vendor",
+    "by_market": "By Market",
+    "fcr_rate": "FCR Rate",
+    "escalation_rate": "Escalation Rate",
+    "repeat_rate": "Repeat Contact Rate",
+    "replacements": "Replacements Trend"
+  },
+  "digital": {
+    "title": "Digital & Automation",
+    "automation_candidates": "Automation Candidates",
+    "manned_vs_digital": "Manned vs Digital Share",
+    "vca_containment": "VCA Containment Rate",
+    "export_backlog": "Export Automation Backlog",
+    "faq_bot_backlog": "FAQ / Bot / VCA Backlog"
+  },
+  "nps": {
+    "title": "NPS Join View",
+    "topic_nps": "Topic NPS",
+    "topic_sentiment": "Topic Sentiment",
+    "ces_link": "CES Link",
+    "detractor_drivers": "Detractor Drivers",
+    "promoter_drivers": "Promoter Drivers"
+  },
+  "upload": {
+    "title": "Upload & Taxonomy",
+    "upload_csv": "Upload CSV/JSON",
+    "upload_audio": "Upload Audio (WAV/MP3)",
+    "run_pipeline": "Run Pipeline",
+    "edit_seeds": "Edit Seed Words",
+    "retrain_topics": "Re-train Topics",
+    "taxonomy_version": "Taxonomy Version",
+    "pipeline_status": "Pipeline Status"
+  },
+  "settings": {
+    "title": "Settings",
+    "asr_model": "ASR Model",
+    "embed_model": "Embedding Model",
+    "language": "Language",
+    "pii_policy": "PII Policy",
+    "pii_entities": "PII Entities"
+  },
+  "export": {
+    "title": "Export",
+    "download_csv": "Download CSV",
+    "download_json": "Download JSON",
+    "copy_chart": "Copy Chart",
+    "capa_list": "CAPA List",
+    "automation_backlog": "Automation Backlog"
+  },
+  "evaluation": {
+    "title": "Evaluation & Acceptance Criteria",
+    "asr_wer": "ASR Word Error Rate",
+    "topic_coherence": "Topic Coherence",
+    "sentiment_metrics": "Sentiment Precision/Recall",
+    "behavior_metrics": "Behavior Precision/Recall",
+    "anomaly_backtest": "Anomaly Backtest",
+    "privacy_audit": "Privacy Audit"
+  },
+  "pipeline": {
+    "running": "Pipeline running...",
+    "complete": "Pipeline complete",
+    "error": "Pipeline error",
+    "pii_step": "PII Redaction",
+    "embed_step": "Embeddings",
+    "topics_step": "Topic Modeling",
+    "sentiment_step": "Sentiment Analysis",
+    "behaviors_step": "Behavior Detection",
+    "anomaly_step": "Anomaly Detection",
+    "impact_step": "Impact Analysis"
+  },
+  "common": {
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "export": "Export",
+    "refresh": "Refresh",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "loading": "Loading...",
+    "no_data": "No data available",
+    "error": "Error",
+    "success": "Success",
+    "all": "All",
+    "volume": "Volume",
+    "sentiment": "Sentiment",
+    "market": "Market",
+    "channel": "Channel",
+    "date_range": "Date Range",
+    "from_date": "From",
+    "to_date": "To"
+  }
+}

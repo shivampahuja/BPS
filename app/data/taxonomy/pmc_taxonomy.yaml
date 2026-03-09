@@ -1,0 +1,580 @@
+# PMI/CSC Consumer Interaction Intelligence Taxonomy
+# Version: 1.0.0
+# Domains A-G with multilingual labels and seed words
+
+taxonomy_version: "1.0.0"
+created: "2026-03-09"
+
+themes:
+
+  # ============================================================
+  # A. PRODUCT EXPERIENCE
+  # ============================================================
+
+  THEME_DEVICE_HEATING:
+    level1: "Product Experience"
+    level2: "Device Performance"
+    level3: "Heating & Consistency"
+    labels:
+      en: "Device heating issues"
+      cs: "Přehřívání zařízení"
+    seeds:
+      en: ["device heating", "overheating", "too hot", "burns", "heat problem", "device warm", "temperature issue", "heating up"]
+      cs: ["přehřívání", "příliš horké", "horké zařízení", "teplota", "zahřívá se", "tepelný problém"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "A.device_performance"
+
+  THEME_BATTERY_CHARGE:
+    level1: "Product Experience"
+    level2: "Device Performance"
+    level3: "Charge & Battery"
+    labels:
+      en: "Battery & charging issues"
+      cs: "Problémy s baterií a nabíjením"
+    seeds:
+      en: ["battery drain", "not charging", "charge problem", "battery life", "won't charge", "battery dead", "charging issue", "low battery"]
+      cs: ["baterie se vybíjí", "nenabíjí", "problém s nabíjením", "výdrž baterie", "baterie vybitá", "nefunguje nabíjení"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "A.device_performance"
+
+  THEME_DEVICE_BREAKAGE:
+    level1: "Product Experience"
+    level2: "Device Performance"
+    level3: "Breakage & Durability"
+    labels:
+      en: "Device breakage & durability"
+      cs: "Poškození a trvanlivost zařízení"
+    seeds:
+      en: ["broken device", "stopped working", "device broke", "not working", "defective", "malfunction", "device failure", "cracked", "damaged"]
+      cs: ["rozbité zařízení", "přestalo fungovat", "zařízení se rozbilo", "nefunguje", "porucha", "poškozené", "prasklé"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "A.device_performance"
+
+  THEME_CONSUMABLES_AVAILABILITY:
+    level1: "Product Experience"
+    level2: "Consumables"
+    level3: "Availability"
+    labels:
+      en: "Consumables availability"
+      cs: "Dostupnost spotřebního materiálu"
+    seeds:
+      en: ["out of stock", "not available", "sold out", "back order", "can't find", "unavailable", "no stock", "when available"]
+      cs: ["vyprodáno", "nedostupné", "není skladem", "objednávka", "nelze najít", "nedostupný", "žádný sklad"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "A.consumables"
+
+  THEME_FLAVOR_QUALITY:
+    level1: "Product Experience"
+    level2: "Consumables"
+    level3: "Flavor & Quality"
+    labels:
+      en: "Flavor & quality issues"
+      cs: "Problémy s chutí a kvalitou"
+    seeds:
+      en: ["flavor problem", "taste issue", "quality poor", "inconsistent flavor", "bad taste", "taste changed", "quality issue", "different taste"]
+      cs: ["problém s chutí", "chuť se změnila", "nekvalitní", "nekonzistentní chuť", "špatná chuť", "jiná chuť"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "A.consumables"
+
+  THEME_ACCESSORY_COMPATIBILITY:
+    level1: "Product Experience"
+    level2: "Accessories"
+    level3: "Fit & Compatibility"
+    labels:
+      en: "Accessory compatibility issues"
+      cs: "Problémy s kompatibilitou příslušenství"
+    seeds:
+      en: ["accessory compatibility", "doesn't fit", "not compatible", "wrong accessory", "accessory issue", "doesn't work with"]
+      cs: ["kompatibilita příslušenství", "nepasuje", "nekompatibilní", "špatné příslušenství", "problém s příslušenstvím"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "A.accessories"
+
+  THEME_REPLACEMENT_WARRANTY:
+    level1: "Product Experience"
+    level2: "Replacement & Warranty"
+    level3: "Eligibility & Process"
+    labels:
+      en: "Replacement & warranty process"
+      cs: "Výměna a záruční proces"
+    seeds:
+      en: ["warranty claim", "replacement request", "want replacement", "need replacement", "warranty issue", "return policy", "exchange device", "warranty expired", "warranty coverage"]
+      cs: ["záruční reklamace", "žádost o výměnu", "chci výměnu", "potřebuji výměnu", "problém se zárukou", "zásady vrácení", "výměna zařízení"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "A.replacement_warranty"
+
+  # ============================================================
+  # B. SERVICE & SUPPORT (CSC)
+  # ============================================================
+
+  THEME_AGENT_EMPATHY:
+    level1: "Service & Support (CSC)"
+    level2: "Contact Handling Quality"
+    level3: "Empathy & Listening"
+    labels:
+      en: "Agent empathy & active listening"
+      cs: "Empatie agenta a aktivní naslouchání"
+    seeds:
+      en: ["agent was rude", "no empathy", "didn't listen", "felt ignored", "agent understood", "very helpful", "agent was kind", "felt heard", "poor attitude"]
+      cs: ["agent byl hrubý", "žádná empatie", "neposlouchal", "cítil jsem se ignorován", "agent pochopil", "velmi nápomocný", "agent byl laskavý", "špatný přístup"]
+    behaviors: ["empathy"]
+    compliance: []
+    automation_eligible: false
+    parent: "B.contact_handling"
+
+  THEME_FCR_RESOLUTION:
+    level1: "Service & Support (CSC)"
+    level2: "Resolution Effectiveness"
+    level3: "First Contact Resolution"
+    labels:
+      en: "First contact resolution"
+      cs: "Vyřešení při prvním kontaktu"
+    seeds:
+      en: ["not resolved", "called again", "still unresolved", "issue persists", "had to call back", "resolved first time", "issue fixed", "problem solved", "resolution", "not fixed"]
+      cs: ["nevyřešeno", "volal jsem znovu", "stále nevyřešeno", "problém přetrvává", "musel jsem zavolat znovu", "vyřešeno poprvé", "problém vyřešen"]
+    behaviors: ["resolution_confirmation"]
+    compliance: []
+    automation_eligible: false
+    parent: "B.resolution_effectiveness"
+
+  THEME_ESCALATION:
+    level1: "Service & Support (CSC)"
+    level2: "Resolution Effectiveness"
+    level3: "Escalation Handling"
+    labels:
+      en: "Escalation handling"
+      cs: "Zpracování eskalace"
+    seeds:
+      en: ["escalate", "speak to manager", "supervisor", "senior agent", "transferred", "escalation needed", "higher level support", "escalated case"]
+      cs: ["eskalovat", "mluvit s vedoucím", "nadřízený", "senior agent", "přepojeno", "potřeba eskalace", "vyšší úroveň podpory", "eskalovaný případ"]
+    behaviors: ["escalation"]
+    compliance: []
+    automation_eligible: false
+    parent: "B.resolution_effectiveness"
+
+  THEME_AUTHENTICATION:
+    level1: "Service & Support (CSC)"
+    level2: "SOP & Compliance"
+    level3: "Authentication"
+    labels:
+      en: "Authentication & identity verification"
+      cs: "Autentifikace a ověření totožnosti"
+    seeds:
+      en: ["verify identity", "authentication", "date of birth", "security question", "confirm account", "identity check", "account verification", "couldn't verify"]
+      cs: ["ověřit totožnost", "autentifikace", "datum narození", "bezpečnostní otázka", "potvrdit účet", "ověření identity", "nedokázal ověřit"]
+    behaviors: ["authentication"]
+    compliance: ["authentication"]
+    automation_eligible: false
+    parent: "B.sop_compliance"
+
+  THEME_ADVERSE_EVENT:
+    level1: "Service & Support (CSC)"
+    level2: "SOP & Compliance"
+    level3: "Adverse Event Routing"
+    labels:
+      en: "Adverse event & health mention"
+      cs: "Nežádoucí událost a zdravotní zmínka"
+    seeds:
+      en: ["health problem", "medical issue", "doctor", "hospital", "injury", "adverse effect", "side effect", "illness", "health concern", "allergic reaction"]
+      cs: ["zdravotní problém", "lékařský problém", "lékař", "nemocnice", "zranění", "nežádoucí účinek", "vedlejší účinek", "nemoc", "zdravotní obava", "alergická reakce"]
+    behaviors: ["adverse_event"]
+    compliance: ["adverse_event", "health_mention"]
+    automation_eligible: false
+    parent: "B.sop_compliance"
+
+  THEME_PROACTIVE_OUTREACH:
+    level1: "Service & Support (CSC)"
+    level2: "Proactive Outreach"
+    level3: "Check-in & Recovery"
+    labels:
+      en: "Proactive outreach & recovery"
+      cs: "Proaktivní oslovení a obnova"
+    seeds:
+      en: ["follow up call", "proactive contact", "callback", "outreach", "checking in", "recovery call", "satisfaction follow-up", "we called you"]
+      cs: ["zpětné volání", "proaktivní kontakt", "callback", "oslovení", "ověření spokojenosti", "kontrolní hovor", "zavolali jsme vám"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "B.proactive_outreach"
+
+  # ============================================================
+  # C. DIGITAL EXPERIENCE
+  # ============================================================
+
+  THEME_CHECKOUT_FRICTION:
+    level1: "Digital Experience"
+    level2: "Navigation & Usability"
+    level3: "Checkout Friction"
+    labels:
+      en: "Checkout friction"
+      cs: "Problémy při dokončení nákupu"
+    seeds:
+      en: ["checkout error", "payment validation", "form validation", "cart failure", "can't checkout", "checkout problem", "payment failed", "checkout issue", "won't process"]
+      cs: ["chyba platby", "validace formuláře", "problém v košíku", "chyba pokladny", "nelze dokončit nákup", "selhání platby"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "C.navigation_usability"
+
+  THEME_SEARCH_NAVIGATION:
+    level1: "Digital Experience"
+    level2: "Navigation & Usability"
+    level3: "Search & Navigation"
+    labels:
+      en: "Search & navigation issues"
+      cs: "Problémy s vyhledáváním a navigací"
+    seeds:
+      en: ["can't find", "search not working", "navigation problem", "website confusing", "can't navigate", "broken link", "page error", "site down", "search failure"]
+      cs: ["nemůžu najít", "vyhledávání nefunguje", "problém s navigací", "web matoucí", "nelze procházet", "nefunkční odkaz", "chyba stránky"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "C.navigation_usability"
+
+  THEME_LOGIN_ACCOUNT:
+    level1: "Digital Experience"
+    level2: "Account & Identity"
+    level3: "Login & Access"
+    labels:
+      en: "Login & account access issues"
+      cs: "Problémy s přihlášením a přístupem k účtu"
+    seeds:
+      en: ["can't login", "login problem", "password reset", "locked out", "account access", "forgot password", "login failed", "account issue", "two factor"]
+      cs: ["nelze se přihlásit", "problém s přihlášením", "obnovení hesla", "účet zablokován", "přístup k účtu", "zapomenuté heslo", "přihlášení selhalo"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "C.account_identity"
+
+  THEME_BOT_FAQ:
+    level1: "Digital Experience"
+    level2: "Content & Help"
+    level3: "Bot & FAQ Quality"
+    labels:
+      en: "Bot & FAQ quality"
+      cs: "Kvalita chatbota a FAQ"
+    seeds:
+      en: ["chatbot useless", "bot didn't help", "FAQ wrong", "bot confused", "virtual assistant failed", "chat bot", "bot couldn't answer", "FAQ not helpful", "automated response wrong"]
+      cs: ["chatbot neužitečný", "bot nepomohl", "FAQ špatné", "bot zmaten", "virtuální asistent selhal", "chatbot", "bot nedokázal odpovědět", "automatická odpověď špatná"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "C.content_help"
+
+  THEME_PROMO_PRICING:
+    level1: "Digital Experience"
+    level2: "Promotions & Pricing UX"
+    level3: "Promo Application"
+    labels:
+      en: "Promo & discount issues"
+      cs: "Problémy s promo akcemi a slevami"
+    seeds:
+      en: ["discount not applied", "promo code failed", "voucher invalid", "coupon not working", "promotion issue", "promo expired", "discount missing", "voucher problem"]
+      cs: ["sleva nebyla uplatněna", "promo kód selhal", "voucher neplatný", "kupón nefunguje", "problém s akcí", "promo vypršelo", "chybějící sleva"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "C.promotions_pricing"
+
+  # ============================================================
+  # D. COMMERCE & FULFILLMENT
+  # ============================================================
+
+  THEME_OOS_STOCK:
+    level1: "Commerce & Fulfillment"
+    level2: "Inventory & OOS"
+    level3: "Out of Stock"
+    labels:
+      en: "Out of stock & inventory"
+      cs: "Vyprodáno a zásoby"
+    seeds:
+      en: ["out of stock", "not in stock", "unavailable", "back order", "when back in stock", "sold out", "no inventory", "stock issue"]
+      cs: ["vyprodáno", "není na skladě", "nedostupné", "zpětná objednávka", "kdy bude skladem", "zásoby vyčerpány"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "D.inventory_oos"
+
+  THEME_DELIVERY_DELAY:
+    level1: "Commerce & Fulfillment"
+    level2: "Delivery & Logistics"
+    level3: "Delivery Delays"
+    labels:
+      en: "Delivery delays"
+      cs: "Zpoždění doručení"
+    seeds:
+      en: ["late delivery", "delayed shipment", "carrier delay", "missed delivery", "package late", "order delayed", "hasn't arrived", "delivery problem", "shipping delay"]
+      cs: ["zpožděné doručení", "zdržení zásilky", "dopravce zpoždění", "nedoručení", "pozdní balíček", "zpožděná objednávka", "nedorazilo", "problém s doručením"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "D.delivery_logistics"
+
+  THEME_DAMAGED_DELIVERY:
+    level1: "Commerce & Fulfillment"
+    level2: "Delivery & Logistics"
+    level3: "Damaged in Transit"
+    labels:
+      en: "Damaged in transit"
+      cs: "Poškozeno při přepravě"
+    seeds:
+      en: ["damaged package", "arrived damaged", "broken in delivery", "transit damage", "damaged goods", "package crushed", "item damaged"]
+      cs: ["poškozený balíček", "dorazilo poškozené", "rozbité při doručení", "poškození při přepravě", "poškozené zboží", "balíček rozdrcen"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "D.delivery_logistics"
+
+  THEME_PAYMENT_REFUND:
+    level1: "Commerce & Fulfillment"
+    level2: "Payment & Refund"
+    level3: "Refund & Chargeback"
+    labels:
+      en: "Payment & refund issues"
+      cs: "Problémy s platbami a vrácením peněz"
+    seeds:
+      en: ["refund request", "want my money back", "charge back", "payment failed", "double charged", "incorrect charge", "refund pending", "payment issue", "billing error"]
+      cs: ["žádost o vrácení peněz", "chci peníze zpět", "vrácení platby", "platba selhala", "účtováno dvakrát", "nesprávná platba", "vrácení čeká", "problém s platbou"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "D.payment_refund"
+
+  THEME_ORDER_MANAGEMENT:
+    level1: "Commerce & Fulfillment"
+    level2: "Order Management"
+    level3: "Amendments & Cancellations"
+    labels:
+      en: "Order amendments & cancellations"
+      cs: "Změny a zrušení objednávek"
+    seeds:
+      en: ["cancel order", "change order", "wrong order", "order mistake", "cancel my order", "modify order", "order correction", "wrong item", "incorrect order"]
+      cs: ["zrušit objednávku", "změnit objednávku", "špatná objednávka", "chyba v objednávce", "zrušit moji objednávku", "upravit objednávku", "nesprávná položka"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "D.order_management"
+
+  # ============================================================
+  # E. PROGRAM & LOYALTY
+  # ============================================================
+
+  THEME_ONBOARDING:
+    level1: "Program & Loyalty"
+    level2: "Onboarding & Guided Trial"
+    level3: "Coach & First Use"
+    labels:
+      en: "Onboarding & first use guidance"
+      cs: "Onboarding a první použití"
+    seeds:
+      en: ["how to use", "setup help", "getting started", "onboarding", "first time use", "initial setup", "tutorial", "instruction help", "guide needed"]
+      cs: ["jak používat", "pomoc s nastavením", "začínám", "onboarding", "první použití", "počáteční nastavení", "tutorial", "instrukce"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "E.onboarding"
+
+  THEME_SUBSCRIPTION:
+    level1: "Program & Loyalty"
+    level2: "Trade-in & Subscription"
+    level3: "Subscription Management"
+    labels:
+      en: "Subscription & trade-in"
+      cs: "Předplatné a výměnný program"
+    seeds:
+      en: ["subscription", "trade in", "upgrade program", "monthly plan", "subscription fee", "cancel subscription", "subscription issue", "trade-in value"]
+      cs: ["předplatné", "výměnný program", "upgrade program", "měsíční plán", "poplatek za předplatné", "zrušit předplatné", "hodnota výměny"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "E.subscription"
+
+  THEME_REWARDS_LOYALTY:
+    level1: "Program & Loyalty"
+    level2: "MGM & Rewards"
+    level3: "Reward & Credit"
+    labels:
+      en: "Rewards & loyalty points"
+      cs: "Odměny a věrnostní body"
+    seeds:
+      en: ["loyalty points", "rewards missing", "points not credited", "reward not received", "refer a friend", "MGM bonus", "points balance", "reward program"]
+      cs: ["věrnostní body", "chybějící odměny", "body nepřipsány", "odměna nedoručena", "doporučit přítele", "MGM bonus", "zůstatek bodů"]
+    behaviors: []
+    compliance: []
+    automation_eligible: true
+    parent: "E.rewards"
+
+  # ============================================================
+  # F. CHANNEL EXPERIENCE
+  # ============================================================
+
+  THEME_INSTORE_SERVICE:
+    level1: "Channel Experience"
+    level2: "In-store Service"
+    level3: "Queue & Knowledge"
+    labels:
+      en: "In-store service quality"
+      cs: "Kvalita obsluhy v prodejně"
+    seeds:
+      en: ["in store", "retail staff", "store service", "queue time", "waiting in store", "staff knowledge", "demo quality", "store experience"]
+      cs: ["v prodejně", "personál", "obsluha prodejny", "čas fronty", "čekání v obchodě", "znalosti personálu", "zkušenost z prodejny"]
+    behaviors: ["empathy"]
+    compliance: []
+    automation_eligible: false
+    parent: "F.instore"
+
+  THEME_POS_EXECUTION:
+    level1: "Channel Experience"
+    level2: "POS Execution"
+    level3: "Availability & Visibility"
+    labels:
+      en: "POS availability & execution"
+      cs: "Dostupnost a realizace v místě prodeje"
+    seeds:
+      en: ["point of sale", "POS", "shelf availability", "planogram", "retail availability", "store stock", "product display"]
+      cs: ["místo prodeje", "POS", "dostupnost na polici", "planogram", "dostupnost v obchodě", "sklad prodejny", "vystavení produktu"]
+    behaviors: []
+    compliance: []
+    automation_eligible: false
+    parent: "F.pos"
+
+  # ============================================================
+  # G. POLICY & COMPLIANCE
+  # ============================================================
+
+  THEME_AGE_VERIFICATION:
+    level1: "Policy & Compliance"
+    level2: "Age & Nicotine Declarations"
+    level3: "Age Verification"
+    labels:
+      en: "Age & nicotine verification"
+      cs: "Ověření věku a nikotinu"
+    seeds:
+      en: ["age verification", "prove age", "age restriction", "underage", "nicotine declaration", "age check", "identity age", "age requirement"]
+      cs: ["ověření věku", "prokázat věk", "věkové omezení", "nezletilý", "prohlášení o nikotinu", "kontrola věku", "požadavek věku"]
+    behaviors: ["authentication"]
+    compliance: ["age_verification", "nicotine_declaration"]
+    automation_eligible: false
+    parent: "G.policy_compliance"
+
+  THEME_PRIVACY_CONCERN:
+    level1: "Policy & Compliance"
+    level2: "Privacy & PII"
+    level3: "Data Privacy"
+    labels:
+      en: "Privacy & data concerns"
+      cs: "Obavy o soukromí a data"
+    seeds:
+      en: ["privacy concern", "data protection", "GDPR", "personal data", "data sharing", "opt out", "delete my data", "right to be forgotten", "data usage"]
+      cs: ["obavy o soukromí", "ochrana dat", "GDPR", "osobní údaje", "sdílení dat", "odhlásit se", "smazat moje data", "právo být zapomenut"]
+    behaviors: []
+    compliance: ["privacy", "gdpr"]
+    automation_eligible: false
+    parent: "G.policy_compliance"
+
+# ============================================================
+# BEHAVIOR DEFINITIONS
+# ============================================================
+
+behaviors:
+  empathy:
+    label:
+      en: "Empathy shown"
+      cs: "Projevená empatie"
+    description: "Agent demonstrated understanding, acknowledgment, or apology"
+    sop_required: true
+
+  authentication:
+    label:
+      en: "Authentication performed"
+      cs: "Provedena autentifikace"
+    description: "Agent verified customer identity per SOP"
+    sop_required: true
+
+  resolution_confirmation:
+    label:
+      en: "Resolution confirmed"
+      cs: "Potvrzeno řešení"
+    description: "Agent confirmed resolution before closing interaction"
+    sop_required: true
+
+  escalation:
+    label:
+      en: "Escalation triggered"
+      cs: "Spuštěna eskalace"
+    description: "Interaction was escalated to supervisor or senior agent"
+    sop_required: false
+
+  adverse_event:
+    label:
+      en: "Adverse event mentioned"
+      cs: "Zmíněna nežádoucí událost"
+    description: "Customer mentioned health/medical concern - requires safety routing"
+    sop_required: true
+
+# ============================================================
+# COMPLIANCE FLAGS
+# ============================================================
+
+compliance_flags:
+  authentication:
+    label:
+      en: "Authentication compliance"
+      cs: "Soulad autentifikace"
+    required: true
+    severity: "high"
+
+  adverse_event:
+    label:
+      en: "Adverse event routing"
+      cs: "Směrování nežádoucích událostí"
+    required: true
+    severity: "critical"
+
+  health_mention:
+    label:
+      en: "Health mention detected"
+      cs: "Detekována zdravotní zmínka"
+    required: true
+    severity: "critical"
+
+  age_verification:
+    label:
+      en: "Age verification required"
+      cs: "Vyžadováno ověření věku"
+    required: true
+    severity: "high"
+
+  nicotine_declaration:
+    label:
+      en: "Nicotine declaration"
+      cs: "Prohlášení o nikotinu"
+    required: true
+    severity: "high"
+
+  privacy:
+    label:
+      en: "Privacy/GDPR compliance"
+      cs: "Soulad s ochranou soukromí/GDPR"
+    required: true
+    severity: "high"
+
+  gdpr:
+    label:
+      en: "GDPR data request"
+      cs: "Žádost o data podle GDPR"
+    required: true
+    severity: "high"
