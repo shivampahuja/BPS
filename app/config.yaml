@@ -1,0 +1,119 @@
+app:
+  title: "CII - Consumer Interaction Intelligence"
+  version: "1.0.0"
+  debug: false
+
+i18n:
+  default: "en"
+  supported: ["en", "cs", "pl", "it", "de", "fr"]
+
+asr:
+  model: "openai/whisper-large-v3"
+  cpu_fallback: "openai/whisper-small.en"
+  task: "transcribe"
+  language: null  # null = autodetect
+  gpu: true
+  chunk_length_s: 30
+  batch_size: 8
+
+nlp:
+  embed_model: "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  embed_model_alternative: "sentence-transformers/all-mpnet-base-v2"
+  sentiment_model: "cardiffnlp/twitter-xlm-roberta-base-sentiment"
+  lid_model: "papluca/xlm-roberta-base-language-detection"
+  topic:
+    guided: true
+    hierarchical_reduction: true
+    min_topic_size: 5
+    nr_topics: "auto"
+    low_memory: false
+    seed_topic_list: []  # loaded from taxonomy
+  embedding_batch_size: 64
+  max_sequence_length: 512
+
+privacy:
+  pii_policy: "mask"  # mask | pseudonymize | redact
+  languages: ["en", "cs"]
+  entities:
+    - PERSON
+    - EMAIL_ADDRESS
+    - PHONE_NUMBER
+    - CREDIT_CARD
+    - LOCATION
+    - DATE_TIME
+    - NRP
+    - IP_ADDRESS
+    - URL
+    - LOYALTY_ID  # custom
+    - ORDER_ID    # custom
+  custom_recognizers:
+    - name: LOYALTY_ID
+      pattern: "\\b(PM[0-9]{8,12}|LY[A-Z0-9]{8,})\\b"
+      score: 0.85
+    - name: ORDER_ID
+      pattern: "\\b(ORD[-_][0-9A-Z]{6,12}|#[0-9]{6,10})\\b"
+      score: 0.80
+  mask_char: "*"
+
+analytics:
+  anomaly:
+    window_days: 7
+    z_score_threshold: 2.5
+    ewm_span: 7
+    min_volume: 10
+  impact:
+    model: "ridge"  # ridge | lasso | rf_importance
+    alpha: 1.0
+    test_size: 0.2
+  dsat:
+    sentiment_threshold: -0.3
+    rules:
+      - field: "sentiment_score"
+        op: "<"
+        value: -0.3
+      - field: "has_complaint_keyword"
+        op: "=="
+        value: true
+  behaviors:
+    empathy:
+      patterns_en: ["understand your frustration", "i apologize", "i'm sorry", "i can see", "that must be", "completely understand"]
+      patterns_cs: ["chápu vaši frustraci", "omlouvám se", "vidím, že", "to musí být", "plně chápu"]
+    authentication:
+      patterns_en: ["verify your identity", "date of birth", "security question", "confirm your account", "authentication"]
+      patterns_cs: ["ověřit totožnost", "datum narození", "bezpečnostní otázka", "potvrdit účet", "autentifikace"]
+    resolution_confirmation:
+      patterns_en: ["is there anything else", "has that resolved", "your issue has been resolved", "confirm the resolution", "anything else i can help"]
+      patterns_cs: ["je ještě něco", "byl problém vyřešen", "váš problém byl vyřešen", "potvrdit řešení", "mohu ještě pomoci"]
+    escalation:
+      patterns_en: ["escalate", "transfer to", "supervisor", "manager", "senior agent", "I'll pass you to"]
+      patterns_cs: ["eskalovat", "přepojit", "nadřízený", "vedoucí", "senior agent", "předám vás"]
+    adverse_event:
+      patterns_en: ["health", "medical", "doctor", "hospital", "injury", "adverse", "side effect", "illness"]
+      patterns_cs: ["zdraví", "lékař", "nemocnice", "zranění", "nežádoucí", "vedlejší účinek", "nemoc"]
+
+taxonomy:
+  file: "data/taxonomy/pmc_taxonomy.yaml"
+  version: "1.0.0"
+
+storage:
+  vector_store: "faiss"  # faiss | chroma
+  index_path: "models/vector_store/index"
+  bertopic_path: "models/bertopic_model"
+  data_path: "data"
+  exports_path: "exports"
+
+ui:
+  theme: "default"
+  max_upload_rows: 50000
+  max_audio_minutes: 120
+  chart_height: 400
+  table_page_size: 20
+
+features:
+  rag_enabled: true
+  asr_enabled: true
+  pii_enabled: true
+  anomaly_enabled: true
+  impact_enabled: true
+  behaviors_enabled: true
+  compliance_enabled: true
