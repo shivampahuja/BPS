@@ -1,0 +1,1458 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>CII — Consumer Interaction Intelligence</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/alpinejs@3.14.1/dist/cdn.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      fontFamily: { sans: ['Inter','ui-sans-serif','system-ui'] },
+      colors: {
+        brand:   { 50:'#eff6ff',100:'#dbeafe',200:'#bfdbfe',300:'#93c5fd',400:'#60a5fa',500:'#3b82f6',600:'#2563eb',700:'#1d4ed8',800:'#1e40af',900:'#1e3a8a' },
+        surface: { 50:'#f8fafc',100:'#f1f5f9',200:'#e2e8f0',300:'#cbd5e1',400:'#94a3b8',500:'#64748b',600:'#475569',700:'#334155',800:'#1e293b',900:'#0f172a',950:'#020617' },
+      },
+      animation: {
+        'slide-in':  'slideIn .25s ease-out',
+        'fade-in':   'fadeIn .3s ease-out',
+        'pulse-slow':'pulse 3s ease-in-out infinite',
+      },
+      keyframes: {
+        slideIn: { from:{ opacity:'0', transform:'translateX(-12px)' }, to:{ opacity:'1', transform:'translateX(0)' } },
+        fadeIn:  { from:{ opacity:'0', transform:'translateY(8px)'  }, to:{ opacity:'1', transform:'translateY(0)' } },
+      },
+    }
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: 'Inter', sans-serif; background: #0f172a; color: #f1f5f9; }
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: #1e293b; }
+  ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
+  .glass { background: rgba(30,41,59,.85); backdrop-filter: blur(16px); border: 1px solid rgba(148,163,184,.08); }
+  .glass-light { background: rgba(30,41,59,.6); backdrop-filter: blur(8px); border: 1px solid rgba(148,163,184,.08); }
+  .gradient-brand { background: linear-gradient(135deg,#1d4ed8 0%,#7c3aed 100%); }
+  .gradient-card  { background: linear-gradient(145deg,#1e293b 0%,#0f172a 100%); border: 1px solid rgba(148,163,184,.08); }
+  .glow-blue  { box-shadow: 0 0 20px rgba(59,130,246,.25); }
+  .glow-purple{ box-shadow: 0 0 20px rgba(124,58,237,.2); }
+  .glow-green { box-shadow: 0 0 20px rgba(16,185,129,.2); }
+  .glow-red   { box-shadow: 0 0 20px rgba(239,68,68,.2); }
+  .sidebar-link { transition: all .2s; border-radius: 10px; }
+  .sidebar-link:hover { background: rgba(59,130,246,.12); }
+  .sidebar-link.active { background: rgba(59,130,246,.2); color: #60a5fa; }
+  .sidebar-link.active svg { color: #60a5fa; }
+  .kpi-card { transition: transform .2s, box-shadow .2s; }
+  .kpi-card:hover { transform: translateY(-2px); }
+  .btn-primary { background: linear-gradient(135deg,#2563eb,#7c3aed); color:#fff; padding:.55rem 1.25rem; border-radius:10px; font-weight:600; font-size:.875rem; transition:opacity .2s,transform .15s; }
+  .btn-primary:hover { opacity:.88; transform:scale(1.02); }
+  .btn-secondary { background: rgba(59,130,246,.12); color:#93c5fd; border:1px solid rgba(59,130,246,.25); padding:.55rem 1.25rem; border-radius:10px; font-weight:600; font-size:.875rem; transition:all .2s; }
+  .btn-secondary:hover { background: rgba(59,130,246,.22); }
+  .badge { display:inline-flex; align-items:center; gap:4px; font-size:.72rem; font-weight:600; padding:.2rem .55rem; border-radius:999px; }
+  .badge-pos { background:rgba(16,185,129,.18); color:#34d399; }
+  .badge-neg { background:rgba(239,68,68,.18);  color:#f87171; }
+  .badge-neu { background:rgba(100,116,139,.18); color:#94a3b8; }
+  .badge-crit{ background:rgba(239,68,68,.25);   color:#fca5a5; }
+  .badge-warn{ background:rgba(245,158,11,.18);  color:#fcd34d; }
+  .badge-info{ background:rgba(59,130,246,.18);  color:#93c5fd; }
+  .tag { background:rgba(59,130,246,.1); color:#93c5fd; font-size:.7rem; padding:.15rem .45rem; border-radius:6px; }
+  table { width:100%; border-collapse:collapse; }
+  thead th { background:#1e293b; color:#94a3b8; font-size:.75rem; font-weight:600; padding:.65rem 1rem; text-align:left; letter-spacing:.05em; text-transform:uppercase; }
+  tbody tr { border-bottom:1px solid rgba(148,163,184,.06); transition:background .15s; }
+  tbody tr:hover { background:rgba(59,130,246,.05); }
+  tbody td { padding:.65rem 1rem; font-size:.85rem; color:#cbd5e1; }
+  .chart-container { position:relative; }
+  .progress-bar { height:6px; border-radius:999px; background:rgba(148,163,184,.1); overflow:hidden; }
+  .progress-fill { height:100%; border-radius:999px; transition:width 1s ease; }
+  .alert-card { border-left: 3px solid; padding: 12px 16px; border-radius: 8px; margin-bottom: 8px; }
+  .alert-crit { border-color: #ef4444; background: rgba(239,68,68,.08); }
+  .alert-warn { border-color: #f59e0b; background: rgba(245,158,11,.08); }
+  .alert-info { border-color: #3b82f6; background: rgba(59,130,246,.08); }
+  .loading-dot { width:8px; height:8px; border-radius:50%; animation: loadingPulse 1.4s ease-in-out infinite; }
+  .loading-dot:nth-child(2) { animation-delay:.2s; }
+  .loading-dot:nth-child(3) { animation-delay:.4s; }
+  @keyframes loadingPulse { 0%,80%,100%{transform:scale(0.6);opacity:.4} 40%{transform:scale(1);opacity:1} }
+  [x-cloak] { display: none !important; }
+</style>
+</head>
+
+<body class="h-full" x-data="ciiApp()" x-init="init()" x-cloak>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- SIDEBAR                                                     -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="fixed inset-y-0 left-0 w-64 glass z-40 flex flex-col" style="border-right:1px solid rgba(148,163,184,.08)">
+  
+  <!-- Logo -->
+  <div class="px-5 py-5 border-b" style="border-color:rgba(148,163,184,.08)">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-xl gradient-brand flex items-center justify-center glow-blue">
+        <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      </div>
+      <div>
+        <div class="font-700 text-sm text-white leading-tight">CII Platform</div>
+        <div class="text-xs text-surface-400 mt-0.5">Consumer Intelligence</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Nav -->
+  <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+    <template x-for="item in navItems" :key="item.id">
+      <button @click="setPage(item.id)"
+              :class="['sidebar-link w-full flex items-center gap-3 px-3 py-2.5 text-left', page===item.id ? 'active':'text-surface-400 hover:text-surface-200']">
+        <span x-html="item.icon" class="w-5 h-5 flex-shrink-0"></span>
+        <span class="text-sm font-500" x-text="item.label"></span>
+        <span x-show="item.id==='alerts' && alertCount>0"
+              class="ml-auto badge badge-crit" x-text="alertCount"></span>
+      </button>
+    </template>
+  </nav>
+
+  <!-- Language + Status -->
+  <div class="px-3 pb-4 space-y-2 border-t pt-3" style="border-color:rgba(148,163,184,.08)">
+    <div class="flex items-center gap-2 px-2">
+      <svg class="w-4 h-4 text-surface-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"/></svg>
+      <select x-model="lang" @change="loadAll()" class="flex-1 bg-transparent text-xs text-surface-300 focus:outline-none cursor-pointer">
+        <option value="en">English</option>
+        <option value="cs">Čeština</option>
+      </select>
+    </div>
+    <div class="px-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full flex-shrink-0"
+              :class="dataLoaded ? 'bg-emerald-400' : 'bg-surface-500'"></span>
+        <span class="text-xs text-surface-400" x-text="dataLoaded ? `${totalRows.toLocaleString()} interactions` : 'Loading...'"></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- MAIN CONTENT                                                -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div class="ml-64 min-h-screen flex flex-col">
+
+  <!-- Top bar -->
+  <header class="sticky top-0 z-30 glass px-6 py-3 flex items-center gap-4" style="border-bottom:1px solid rgba(148,163,184,.08)">
+    <h1 class="text-sm font-600 text-white" x-text="currentPageTitle()"></h1>
+    <div class="flex-1 max-w-md">
+      <div class="relative">
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
+        <input x-model="searchQ" @keydown.enter="doSearch()" type="text" placeholder="Search interactions..." class="w-full bg-surface-800 text-surface-200 pl-9 pr-4 py-1.5 text-sm rounded-lg border border-surface-700 focus:outline-none focus:border-brand-500 transition-colors"/>
+      </div>
+    </div>
+    <div class="flex items-center gap-3 ml-auto">
+      <!-- Filters -->
+      <select x-model="filterMarket" @change="loadAll()" class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700 focus:outline-none">
+        <option value="All">All Markets</option>
+        <option value="UK">UK</option><option value="US">US</option>
+        <option value="DE">DE</option><option value="CZ">CZ</option>
+      </select>
+      <select x-model="filterChannel" @change="loadAll()" class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700 focus:outline-none">
+        <option value="All">All Channels</option>
+        <option value="call">Call</option><option value="chat">Chat</option>
+        <option value="email">Email</option><option value="review">Review</option><option value="nps">NPS</option>
+      </select>
+      <!-- Alert bell -->
+      <button @click="setPage('alerts')" class="relative p-2 rounded-lg hover:bg-surface-800 transition-colors">
+        <svg class="w-5 h-5 text-surface-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        <span x-show="alertCount>0" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+      </button>
+      <div class="w-8 h-8 rounded-full gradient-brand flex items-center justify-center text-white font-700 text-xs cursor-pointer glow-blue">
+        CII
+      </div>
+    </div>
+  </header>
+
+  <!-- Page content -->
+  <main class="flex-1 p-6 overflow-y-auto">
+
+    <!-- Loading overlay -->
+    <div x-show="loading" class="fixed inset-0 z-50 flex items-center justify-center" style="background:rgba(15,23,42,.7)">
+      <div class="glass rounded-2xl p-8 flex flex-col items-center gap-4">
+        <div class="flex gap-2">
+          <div class="loading-dot bg-brand-400"></div>
+          <div class="loading-dot bg-brand-400"></div>
+          <div class="loading-dot bg-brand-400"></div>
+        </div>
+        <span class="text-sm text-surface-300" x-text="loadingMsg"></span>
+      </div>
+    </div>
+
+    <!-- ══════════════ OVERVIEW ══════════════ -->
+    <div x-show="page==='overview'" class="space-y-6 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-700 text-white">Dashboard Overview</h2>
+          <p class="text-sm text-surface-400 mt-0.5">Real-time consumer interaction intelligence</p>
+        </div>
+        <button @click="loadAll()" class="btn-secondary flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          Refresh
+        </button>
+      </div>
+
+      <!-- KPI row -->
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4">
+        <template x-for="kpi in kpiCards" :key="kpi.key">
+          <div class="gradient-card rounded-2xl p-4 kpi-card cursor-default" :class="kpi.glow">
+            <div class="flex items-start justify-between">
+              <div class="w-9 h-9 rounded-xl flex items-center justify-center" :style="`background:${kpi.bg}`">
+                <span x-html="kpi.icon" class="text-lg"></span>
+              </div>
+              <span class="badge" :class="kpi.badge" x-text="kpi.delta" x-show="kpi.delta"></span>
+            </div>
+            <div class="mt-3">
+              <div class="text-2xl font-700 text-white" x-text="kpi.value"></div>
+              <div class="text-xs text-surface-400 mt-0.5 font-500" x-text="kpi.label"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+
+      <!-- Charts row -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <!-- Volume trend -->
+        <div class="xl:col-span-2 gradient-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-600 text-white text-sm">Interaction Volume</h3>
+            <span class="tag">Daily</span>
+          </div>
+          <div class="chart-container" style="height:200px">
+            <canvas id="volumeChart"></canvas>
+          </div>
+        </div>
+        <!-- Sentiment donut -->
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Sentiment Split</h3>
+          <div class="chart-container flex items-center justify-center" style="height:160px">
+            <canvas id="sentimentDonut"></canvas>
+          </div>
+          <div class="grid grid-cols-3 gap-2 mt-4">
+            <div class="text-center">
+              <div class="text-lg font-700 text-emerald-400" x-text="overview.kpis?.pos_pct + '%'"></div>
+              <div class="text-xs text-surface-400">Positive</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-700 text-surface-400" x-text="overview.kpis?.neu_pct + '%'"></div>
+              <div class="text-xs text-surface-400">Neutral</div>
+            </div>
+            <div class="text-center">
+              <div class="text-lg font-700 text-red-400" x-text="overview.kpis?.neg_pct + '%'"></div>
+              <div class="text-xs text-surface-400">Negative</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topics + Alerts row -->
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <!-- Top topics bar -->
+        <div class="xl:col-span-2 gradient-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-600 text-white text-sm">Top Topics by Volume</h3>
+            <button @click="setPage('topics')" class="text-xs text-brand-400 hover:text-brand-300 font-500">View all →</button>
+          </div>
+          <div class="chart-container" style="height:230px">
+            <canvas id="topicsChart"></canvas>
+          </div>
+        </div>
+        <!-- Alerts -->
+        <div class="gradient-card rounded-2xl p-5">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="font-600 text-white text-sm">Active Alerts</h3>
+            <button @click="setPage('alerts')" class="text-xs text-brand-400 hover:text-brand-300 font-500">View all →</button>
+          </div>
+          <div class="space-y-2 overflow-y-auto" style="max-height:260px">
+            <template x-for="a in (overview.alerts||[])" :key="a.alert_id">
+              <div class="alert-card" :class="a.z_score>3 ? 'alert-crit' : a.z_score>2 ? 'alert-warn' : 'alert-info'">
+                <div class="flex items-start justify-between gap-2">
+                  <div class="font-600 text-xs text-white" x-text="(a.alert_type||'').replace(/_/g,' ')"></div>
+                  <span class="badge" :class="a.z_score>3 ? 'badge-neg' : 'badge-warn'" x-text="`z=${a.z_score?.toFixed(1)}`"></span>
+                </div>
+                <div class="text-xs text-surface-300 mt-1 leading-relaxed" x-text="(a.explanation||'').slice(0,90)+'...'"></div>
+                <div class="text-xs text-surface-400 mt-1" x-text="(a.date||'').slice(0,10)"></div>
+              </div>
+            </template>
+            <div x-show="!(overview.alerts||[]).length" class="text-sm text-surface-400 text-center py-8">
+              ✅ No active alerts
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Channel + Market row -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">By Channel</h3>
+          <div class="chart-container" style="height:180px"><canvas id="channelChart"></canvas></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">By Market</h3>
+          <div class="chart-container" style="height:180px"><canvas id="marketChart"></canvas></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ TOPICS / THEMES ══════════════ -->
+    <div x-show="page==='topics'" class="space-y-6 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-700 text-white">Themes Explorer</h2>
+          <p class="text-sm text-surface-400 mt-0.5">PMI/CSC taxonomy · 7 domains · <span x-text="topics.length"></span> themes</p>
+        </div>
+        <div class="flex gap-2">
+          <select x-model="filterDomain" @change="loadTopics()" class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700 focus:outline-none">
+            <option value="All">All Domains</option>
+            <option>Product Experience</option><option>Service &amp; Support (CSC)</option>
+            <option>Digital Experience</option><option>Commerce &amp; Fulfillment</option>
+            <option>Program &amp; Loyalty</option><option>Channel Experience</option>
+            <option>Policy &amp; Compliance</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <!-- Scatter bubble -->
+        <div class="xl:col-span-2 gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Volume × Sentiment Bubble Map</h3>
+          <div class="chart-container" style="height:320px"><canvas id="topicBubble"></canvas></div>
+        </div>
+        <!-- Domain breakdown -->
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">By Domain</h3>
+          <div class="space-y-3">
+            <template x-for="d in domainBreakdown" :key="d.domain">
+              <div>
+                <div class="flex justify-between text-xs mb-1">
+                  <span class="text-surface-300 font-500 truncate" style="max-width:160px" x-text="d.domain"></span>
+                  <span class="text-surface-400" x-text="d.count + ' topics'"></span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" :style="`width:${d.pct}%; background:${d.color}`"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topics table -->
+      <div class="gradient-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color:rgba(148,163,184,.08)">
+          <h3 class="font-600 text-white text-sm">Topic Details</h3>
+          <input x-model="topicSearch" type="text" placeholder="Filter topics..." class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700 focus:outline-none w-44"/>
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th>Topic</th><th>Domain</th><th>Volume</th>
+                <th>Avg Sentiment</th><th>DSAT %</th><th>Behaviors</th><th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="t in filteredTopics" :key="t.topic_label">
+                <tr>
+                  <td class="font-500 text-white max-w-xs">
+                    <div class="truncate" x-text="t.topic_label" style="max-width:220px" :title="t.topic_label"></div>
+                  </td>
+                  <td><span class="tag" x-text="(t.l1_domain||'').split('(')[0].trim()"></span></td>
+                  <td><span class="font-600 text-white" x-text="t.volume"></span></td>
+                  <td>
+                    <span class="badge" :class="t.avg_sentiment>0.1 ? 'badge-pos' : t.avg_sentiment<-0.1 ? 'badge-neg' : 'badge-neu'"
+                          x-text="t.avg_sentiment?.toFixed(2)"></span>
+                  </td>
+                  <td>
+                    <div class="flex items-center gap-2">
+                      <div class="progress-bar w-16">
+                        <div class="progress-fill bg-red-500" :style="`width:${t.dsat_pct}%`"></div>
+                      </div>
+                      <span class="text-surface-300 text-xs" x-text="t.dsat_pct + '%'"></span>
+                    </div>
+                  </td>
+                  <td>
+                    <div class="flex gap-1 flex-wrap">
+                      <template x-for="b in Object.entries(t.behaviors||{})" :key="b[0]">
+                        <span x-show="b[1]>0" class="badge badge-info text-xs" x-text="b[0].replace('_',' ')"></span>
+                      </template>
+                    </div>
+                  </td>
+                  <td>
+                    <button @click="showTopicSamples(t.topic_label)" class="btn-secondary py-1 px-2.5 text-xs">Samples</button>
+                  </td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Topic samples modal -->
+      <div x-show="topicModal" @click.self="topicModal=false" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background:rgba(0,0,0,.6)">
+        <div class="glass rounded-2xl w-full max-w-3xl max-h-screen overflow-hidden flex flex-col">
+          <div class="px-6 py-4 border-b flex items-center justify-between" style="border-color:rgba(148,163,184,.1)">
+            <h3 class="font-600 text-white">Sample interactions: <span class="text-brand-400" x-text="selectedTopic"></span></h3>
+            <button @click="topicModal=false" class="text-surface-400 hover:text-white">✕</button>
+          </div>
+          <div class="overflow-y-auto p-6 space-y-3" style="max-height:520px">
+            <template x-for="s in topicSamples" :key="s.interaction_id">
+              <div class="gradient-card rounded-xl p-4 space-y-2">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="badge badge-info" x-text="s.channel"></span>
+                  <span class="badge badge-info" x-text="s.lang?.toUpperCase()"></span>
+                  <span class="tag" x-text="s.market"></span>
+                  <span class="badge" :class="s.sentiment==='pos'?'badge-pos':s.sentiment==='neg'?'badge-neg':'badge-neu'" x-text="s.sentiment"></span>
+                  <span class="text-xs text-surface-400 ml-auto" x-text="(s.created_ts||'').slice(0,10)"></span>
+                </div>
+                <p class="text-sm text-surface-200 leading-relaxed" x-text="s.pii_masked_text"></p>
+                <div class="flex gap-1 flex-wrap" x-show="(s.behaviors||[]).length">
+                  <template x-for="b in (s.behaviors||[])" :key="b">
+                    <span class="badge badge-warn text-xs" x-text="b.replace('_',' ')"></span>
+                  </template>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ SENTIMENT ══════════════ -->
+    <div x-show="page==='sentiment'" class="space-y-6 animate-fade-in">
+      <h2 class="text-xl font-700 text-white">Sentiment &amp; DSAT Analysis</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-emerald-400" x-text="(sentiment.distribution?.pos||0).toLocaleString()"></div>
+          <div class="text-xs text-surface-400 mt-1 font-500">Positive</div>
+          <div class="text-sm text-surface-300 mt-1" x-text="sentPct('pos') + '%'"></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-surface-300" x-text="(sentiment.distribution?.neu||0).toLocaleString()"></div>
+          <div class="text-xs text-surface-400 mt-1 font-500">Neutral</div>
+          <div class="text-sm text-surface-300 mt-1" x-text="sentPct('neu') + '%'"></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-red-400" x-text="(sentiment.distribution?.neg||0).toLocaleString()"></div>
+          <div class="text-xs text-surface-400 mt-1 font-500">Negative</div>
+          <div class="text-sm text-surface-300 mt-1" x-text="sentPct('neg') + '%'"></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card glow-red">
+          <div class="text-3xl font-700 text-red-400" x-text="(sentiment.distribution?.dsat||0).toLocaleString()"></div>
+          <div class="text-xs text-surface-400 mt-1 font-500">DSAT Interactions</div>
+          <div class="text-sm text-surface-300 mt-1" x-text="dsatPct() + '% rate'"></div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">DSAT Drivers by Topic</h3>
+          <div class="chart-container" style="height:260px"><canvas id="dsatChart"></canvas></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Sentiment by Channel &amp; Market</h3>
+          <div class="grid grid-cols-2 gap-4 h-full">
+            <div class="chart-container" style="height:220px"><canvas id="sentChannelChart"></canvas></div>
+            <div class="chart-container" style="height:220px"><canvas id="sentMarketChart"></canvas></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Negative verbatim explorer -->
+      <div class="gradient-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b flex items-center justify-between" style="border-color:rgba(148,163,184,.08)">
+          <h3 class="font-600 text-white text-sm">Negative Verbatim Explorer</h3>
+          <div class="flex items-center gap-2">
+            <label class="flex items-center gap-1.5 cursor-pointer">
+              <input type="checkbox" x-model="dsatOnly" class="rounded" @change="applyVerbatimFilter()"/>
+              <span class="text-xs text-surface-300">DSAT only</span>
+            </label>
+          </div>
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>ID</th><th>Channel</th><th>Lang</th><th>Market</th><th>Text</th><th>Score</th><th>Topic</th></tr></thead>
+            <tbody>
+              <template x-for="v in verbatims" :key="v.interaction_id">
+                <tr>
+                  <td class="text-xs font-500 text-surface-400" x-text="v.interaction_id?.slice(0,14)"></td>
+                  <td><span class="badge badge-info" x-text="v.channel"></span></td>
+                  <td class="text-xs text-surface-300 uppercase" x-text="v.lang"></td>
+                  <td class="text-xs text-surface-300" x-text="v.market"></td>
+                  <td class="max-w-xs"><span class="text-sm text-surface-200 line-clamp-2" x-text="v.pii_masked_text" :title="v.pii_masked_text"></span></td>
+                  <td><span class="badge badge-neg" x-text="v.sentiment_score?.toFixed(2)"></span></td>
+                  <td class="max-w-xs"><span class="tag text-xs truncate block" style="max-width:160px" x-text="v.topic_label" :title="v.topic_label"></span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ OPERATIONS ══════════════ -->
+    <div x-show="page==='operations'" class="space-y-6 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-700 text-white">Operations (CSC)</h2>
+          <p class="text-sm text-surface-400 mt-0.5">Behaviors, compliance, SOP adherence</p>
+        </div>
+        <select x-model="opsGroupBy" @change="loadOperations()" class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700 focus:outline-none">
+          <option value="channel">By Channel</option>
+          <option value="market">By Market</option>
+          <option value="queue">By Queue</option>
+          <option value="vendor">By Vendor</option>
+        </select>
+      </div>
+
+      <!-- Ops KPIs -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="gradient-card rounded-2xl p-4 text-center kpi-card">
+          <div class="text-2xl font-700 text-white" x-text="(ops.kpis?.total||0).toLocaleString()"></div>
+          <div class="text-xs text-surface-400 mt-1">Total Interactions</div>
+        </div>
+        <div class="gradient-card rounded-2xl p-4 text-center kpi-card glow-red">
+          <div class="text-2xl font-700 text-red-400" x-text="ops.kpis?.critical_flags||0"></div>
+          <div class="text-xs text-surface-400 mt-1">Critical Flags</div>
+        </div>
+        <div class="gradient-card rounded-2xl p-4 text-center kpi-card">
+          <div class="text-2xl font-700 text-yellow-400" x-text="(ops.kpis?.escalation_rate||0) + '%'"></div>
+          <div class="text-xs text-surface-400 mt-1">Escalation Rate</div>
+        </div>
+        <div class="gradient-card rounded-2xl p-4 text-center kpi-card">
+          <div class="text-2xl font-700 text-brand-400" x-text="(ops.kpis?.auth_rate||0) + '%'"></div>
+          <div class="text-xs text-surface-400 mt-1">Auth Rate</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <!-- Behavior frequencies -->
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Behavior Detection Rates</h3>
+          <div class="space-y-3">
+            <template x-for="[b, pct] in Object.entries(ops.behaviors||{})" :key="b">
+              <div>
+                <div class="flex justify-between text-xs mb-1.5">
+                  <span class="text-surface-200 font-500 capitalize" x-text="b.replace(/_/g,' ')"></span>
+                  <span class="text-surface-300 font-600" x-text="pct + '%'"></span>
+                </div>
+                <div class="progress-bar">
+                  <div class="progress-fill" :style="`width:${pct}%; background:${behaviorColor(b)}`"></div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+        <!-- Compliance flags -->
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Compliance Flags</h3>
+          <div class="chart-container" style="height:240px"><canvas id="complianceChart"></canvas></div>
+        </div>
+      </div>
+
+      <!-- Behavior heatmap -->
+      <div class="gradient-card rounded-2xl p-5">
+        <h3 class="font-600 text-white text-sm mb-4">Behavior Heatmap — by <span class="text-brand-400 capitalize" x-text="opsGroupBy"></span></h3>
+        <div class="overflow-x-auto">
+          <table>
+            <thead>
+              <tr>
+                <th class="capitalize" x-text="opsGroupBy"></th>
+                <th>Empathy</th><th>Authentication</th><th>Resolution Confirm</th>
+                <th>Escalation</th><th>Adverse Event</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template x-for="row in (ops.heatmap||[])" :key="row[opsGroupBy]">
+                <tr>
+                  <td class="font-500 text-white" x-text="row[opsGroupBy]"></td>
+                  <template x-for="b in ['empathy','authentication','resolution_confirmation','escalation','adverse_event']" :key="b">
+                    <td>
+                      <div class="flex items-center gap-2">
+                        <div class="w-12 progress-bar">
+                          <div class="progress-fill" :style="`width:${row[b]||0}%; background:${heatColor(row[b]||0)}`"></div>
+                        </div>
+                        <span class="text-xs text-surface-300" x-text="(row[b]||0) + '%'"></span>
+                      </div>
+                    </td>
+                  </template>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Critical compliance -->
+      <div x-show="(ops.critical||[]).length" class="gradient-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b flex items-center gap-2" style="border-color:rgba(148,163,184,.08)">
+          <span class="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
+          <h3 class="font-600 text-white text-sm">Critical Compliance Interactions</h3>
+          <span class="badge badge-crit ml-2" x-text="(ops.critical||[]).length"></span>
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>ID</th><th>Channel</th><th>Market</th><th>Critical Flags</th><th>Text</th></tr></thead>
+            <tbody>
+              <template x-for="r in (ops.critical||[])" :key="r.interaction_id">
+                <tr>
+                  <td class="text-xs text-surface-400" x-text="r.interaction_id?.slice(0,14)"></td>
+                  <td><span class="badge badge-info" x-text="r.channel"></span></td>
+                  <td class="text-xs text-surface-300" x-text="r.market"></td>
+                  <td>
+                    <div class="flex gap-1 flex-wrap">
+                      <template x-for="f in (r.critical_flags||[])" :key="f">
+                        <span class="badge badge-crit text-xs" x-text="f.replace(/_/g,' ')"></span>
+                      </template>
+                    </div>
+                  </td>
+                  <td class="max-w-xs"><span class="text-xs text-surface-300 line-clamp-2" x-text="r.pii_masked_text"></span></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ NPS JOIN ══════════════ -->
+    <div x-show="page==='nps'" class="space-y-6 animate-fade-in">
+      <h2 class="text-xl font-700 text-white">NPS Join View</h2>
+      <p class="text-sm text-surface-400 -mt-4">CII topics mapped to NPS topic tree via TopicID — one hierarchy, two lenses</p>
+
+      <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="xl:col-span-2 gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Topic NPS Proxy vs Volume</h3>
+          <div class="chart-container" style="height:300px"><canvas id="npsScatterChart"></canvas></div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">NPS by Market</h3>
+          <div class="chart-container" style="height:200px"><canvas id="npsMarketChart"></canvas></div>
+          <div class="mt-4 space-y-2">
+            <template x-for="m in (nps.nps_by_market||[])" :key="m.market">
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-surface-300 font-500" x-text="m.market"></span>
+                <span class="font-700" :class="m.nps>=40?'text-emerald-400':m.nps>=20?'text-yellow-400':'text-red-400'" x-text="m.nps?.toFixed(1)"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detractor vs Promoter -->
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-1">🔴 Detractor Drivers</h3>
+          <p class="text-xs text-surface-400 mb-4">Topics with highest negative sentiment volume</p>
+          <div class="space-y-2.5">
+            <template x-for="d in (nps.detractors||[]).slice(0,7)" :key="d.topic_label">
+              <div class="flex items-center gap-3">
+                <div class="flex-1 text-sm text-surface-200 truncate" x-text="d.topic_label"></div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <div class="w-20 progress-bar">
+                    <div class="progress-fill bg-red-500" :style="`width:${Math.min(d.count/3,100)}%`"></div>
+                  </div>
+                  <span class="text-xs font-600 text-red-400 w-8 text-right" x-text="d.count"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-1">🟢 Promoter Drivers</h3>
+          <p class="text-xs text-surface-400 mb-4">Topics with highest positive sentiment volume</p>
+          <div class="space-y-2.5">
+            <template x-for="p in (nps.promoters||[]).slice(0,7)" :key="p.topic_label">
+              <div class="flex items-center gap-3">
+                <div class="flex-1 text-sm text-surface-200 truncate" x-text="p.topic_label"></div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <div class="w-20 progress-bar">
+                    <div class="progress-fill bg-emerald-500" :style="`width:${Math.min(p.count/3,100)}%`"></div>
+                  </div>
+                  <span class="text-xs font-600 text-emerald-400 w-8 text-right" x-text="p.count"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Topic NPS table -->
+      <div class="gradient-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b" style="border-color:rgba(148,163,184,.08)">
+          <h3 class="font-600 text-white text-sm">Topic NPS Table</h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table>
+            <thead><tr><th>Topic</th><th>Domain</th><th>Volume</th><th>Topic NPS</th><th>Avg Sentiment</th><th>DSAT %</th></tr></thead>
+            <tbody>
+              <template x-for="t in (nps.topics||[]).slice(0,20)" :key="t.topic_label">
+                <tr>
+                  <td class="font-500 text-white text-sm" x-text="t.topic_label"></td>
+                  <td><span class="tag" x-text="(t.l1_domain||'').split('(')[0].trim()"></span></td>
+                  <td class="font-600 text-white" x-text="t.volume"></td>
+                  <td><span class="badge" :class="t.topic_nps>=40?'badge-pos':t.topic_nps>=0?'badge-warn':'badge-neg'" x-text="t.topic_nps"></span></td>
+                  <td><span class="badge" :class="t.avg_sentiment>0.1?'badge-pos':t.avg_sentiment<-0.1?'badge-neg':'badge-neu'" x-text="t.avg_sentiment?.toFixed(3)"></span></td>
+                  <td class="text-surface-300" x-text="t.dsat_pct + '%'"></td>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ DIGITAL ══════════════ -->
+    <div x-show="page==='digital'" class="space-y-6 animate-fade-in">
+      <h2 class="text-xl font-700 text-white">Digital &amp; Automation</h2>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-brand-400" x-text="digital.digital||0"></div>
+          <div class="text-xs text-surface-400 mt-1">Digital Interactions</div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-purple-400" x-text="digital.manned||0"></div>
+          <div class="text-xs text-surface-400 mt-1">Manned Interactions</div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5 text-center kpi-card">
+          <div class="text-3xl font-700 text-emerald-400" x-text="(digital.automation_candidates||[]).length"></div>
+          <div class="text-xs text-surface-400 mt-1">Automation Candidates</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Manned vs Digital Share</h3>
+          <div class="chart-container flex items-center justify-center" style="height:220px">
+            <canvas id="mannedDigitalChart"></canvas>
+          </div>
+        </div>
+        <div class="gradient-card rounded-2xl p-5">
+          <h3 class="font-600 text-white text-sm mb-4">Top Automation Candidates</h3>
+          <div class="space-y-2.5">
+            <template x-for="a in (digital.automation_candidates||[]).slice(0,8)" :key="a.topic_label">
+              <div class="flex items-center gap-3">
+                <div class="flex-1 text-sm text-surface-200 truncate" x-text="a.topic_label"></div>
+                <div class="flex items-center gap-2 flex-shrink-0">
+                  <div class="w-16 progress-bar">
+                    <div class="progress-fill bg-brand-400" :style="`width:${Math.min((a.automation_score||0)*100,100)}%`"></div>
+                  </div>
+                  <span class="text-xs font-600 text-brand-400 w-12 text-right" x-text="a.volume"></span>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+
+      <!-- Export buttons -->
+      <div class="flex gap-3 flex-wrap">
+        <a href="/api/export/interactions" class="btn-secondary flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export Interactions CSV
+        </a>
+        <a href="/api/export/automation-backlog" class="btn-secondary flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export Automation Backlog
+        </a>
+        <a href="/api/export/capa" class="btn-secondary flex items-center gap-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+          Export CAPA List
+        </a>
+      </div>
+    </div>
+
+    <!-- ══════════════ ALERTS ══════════════ -->
+    <div x-show="page==='alerts'" class="space-y-6 animate-fade-in">
+      <h2 class="text-xl font-700 text-white">Alerts &amp; Anomalies</h2>
+      <div class="space-y-3">
+        <template x-for="a in (allAlerts||[])" :key="a.alert_id">
+          <div class="gradient-card rounded-2xl p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex items-start gap-3 flex-1">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
+                     :class="a.z_score>3?'bg-red-900':'a.z_score>2?bg-yellow-900 text-yellow-400':'bg-blue-900'"
+                     style="background:rgba(239,68,68,.2)">
+                  <span class="text-xl" x-text="a.z_score>3?'🚨':a.z_score>2?'⚠️':'ℹ️'"></span>
+                </div>
+                <div>
+                  <div class="font-600 text-white capitalize" x-text="(a.alert_type||'').replace(/_/g,' ')"></div>
+                  <div class="text-sm text-surface-300 mt-1" x-text="a.explanation"></div>
+                  <div class="text-xs text-brand-400 mt-2 font-500" x-text="a.playbook_en"></div>
+                </div>
+              </div>
+              <div class="text-right flex-shrink-0">
+                <span class="badge" :class="a.z_score>3?'badge-crit':'badge-warn'" x-text="`z=${a.z_score?.toFixed(1)}`"></span>
+                <div class="text-xs text-surface-400 mt-2" x-text="(a.date||'').slice(0,10)"></div>
+                <span class="badge badge-info mt-1" x-text="a.status||'open'"></span>
+              </div>
+            </div>
+          </div>
+        </template>
+        <div x-show="!(allAlerts||[]).length" class="gradient-card rounded-2xl p-10 text-center">
+          <div class="text-4xl mb-3">✅</div>
+          <div class="text-surface-300">No active alerts — system is healthy</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ UPLOAD ══════════════ -->
+    <div x-show="page==='upload'" class="space-y-6 animate-fade-in">
+      <h2 class="text-xl font-700 text-white">Upload &amp; Process Data</h2>
+
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <!-- Upload card -->
+        <div class="gradient-card rounded-2xl p-6 space-y-5">
+          <h3 class="font-600 text-white">Upload Interaction Data</h3>
+          <div class="border-2 border-dashed border-surface-600 rounded-xl p-8 text-center hover:border-brand-500 transition-colors cursor-pointer"
+               @dragover.prevent @drop.prevent="handleDrop($event)"
+               @click="$refs.fileInput.click()">
+            <input type="file" x-ref="fileInput" accept=".csv,.json,.xlsx" @change="handleFileSelect($event)" class="hidden"/>
+            <div class="text-3xl mb-3">📁</div>
+            <div class="text-sm text-surface-300 font-500">Drop CSV / JSON / XLSX here</div>
+            <div class="text-xs text-surface-400 mt-1">Max 50,000 rows</div>
+          </div>
+          <select x-model="uploadSource" class="w-full bg-surface-800 text-surface-300 text-sm px-3 py-2 rounded-lg border border-surface-700 focus:outline-none">
+            <option value="generic">Generic CSV/JSON</option>
+            <option value="zendesk">Zendesk Export</option>
+            <option value="trustpilot">Trustpilot Reviews</option>
+            <option value="qualtrics">Qualtrics NPS</option>
+          </select>
+          <div x-show="uploadStatus" class="text-sm font-500" :class="uploadError?'text-red-400':'text-emerald-400'" x-text="uploadStatus"></div>
+        </div>
+
+        <!-- Pipeline card -->
+        <div class="gradient-card rounded-2xl p-6 space-y-5">
+          <h3 class="font-600 text-white">Run Pipeline</h3>
+          <p class="text-sm text-surface-400">Run PII redaction, sentiment, behavior detection, compliance flagging, and anomaly detection on loaded data.</p>
+          <button @click="runPipeline()" :disabled="pipelineRunning" class="btn-primary w-full flex items-center justify-center gap-2">
+            <template x-if="!pipelineRunning">
+              <span class="flex items-center gap-2">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Run Full Pipeline
+              </span>
+            </template>
+            <template x-if="pipelineRunning">
+              <span class="flex items-center gap-2">
+                <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                Running...
+              </span>
+            </template>
+          </button>
+          <!-- Pipeline steps -->
+          <div class="space-y-2">
+            <template x-for="s in pipelineSteps" :key="s.name">
+              <div class="flex items-center gap-3 p-2.5 rounded-lg bg-surface-800">
+                <span x-text="s.status==='complete'?'✅':s.status==='running'?'🔄':s.status==='error'?'❌':'⏳'"></span>
+                <span class="text-sm text-surface-300 flex-1" x-text="s.name"></span>
+                <span class="badge" :class="s.status==='complete'?'badge-pos':s.status==='error'?'badge-neg':'badge-info'" x-text="s.status"></span>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════════ SEARCH ══════════════ -->
+    <div x-show="page==='search'" class="space-y-6 animate-fade-in">
+      <div>
+        <h2 class="text-xl font-700 text-white">Semantic Search &amp; Q&amp;A</h2>
+        <p class="text-sm text-surface-400 mt-0.5">Cross-lingual — English queries retrieve Czech documents when semantically similar</p>
+      </div>
+      <div class="gradient-card rounded-2xl p-6 space-y-4">
+        <div class="flex gap-3">
+          <input x-model="searchQ" @keydown.enter="doSearch()" type="text" placeholder="Search across all interactions (EN or CS)..." class="flex-1 bg-surface-800 text-surface-200 px-4 py-3 text-sm rounded-xl border border-surface-700 focus:outline-none focus:border-brand-500 transition-colors"/>
+          <button @click="doSearch()" class="btn-primary flex items-center gap-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>
+            Search
+          </button>
+        </div>
+        <div x-show="searchResults.total>0" class="text-xs text-surface-400">
+          Found <span class="text-brand-400 font-600" x-text="searchResults.total"></span> matching interactions
+        </div>
+      </div>
+      <div x-show="(searchResults.results||[]).length" class="gradient-card rounded-2xl overflow-hidden">
+        <div class="px-5 py-4 border-b" style="border-color:rgba(148,163,184,.08)">
+          <h3 class="font-600 text-white text-sm">Search Results</h3>
+        </div>
+        <div class="divide-y" style="border-color:rgba(148,163,184,.06)">
+          <template x-for="r in (searchResults.results||[])" :key="r.interaction_id">
+            <div class="px-5 py-4 hover:bg-surface-800/30 transition-colors">
+              <div class="flex items-center gap-2 mb-2 flex-wrap">
+                <span class="badge badge-info" x-text="r.channel"></span>
+                <span class="badge badge-info uppercase" x-text="r.lang"></span>
+                <span class="tag" x-text="r.market"></span>
+                <span class="badge" :class="r.sentiment==='pos'?'badge-pos':r.sentiment==='neg'?'badge-neg':'badge-neu'" x-text="r.sentiment"></span>
+                <span class="text-xs text-surface-400 ml-auto" x-text="r.interaction_id?.slice(0,16)"></span>
+              </div>
+              <p class="text-sm text-surface-200 leading-relaxed" x-text="r.pii_masked_text"></p>
+              <div class="text-xs text-brand-400 mt-1" x-show="r.topic_label" x-text="'📌 ' + r.topic_label"></div>
+            </div>
+          </template>
+        </div>
+      </div>
+      <div x-show="searchQ && !(searchResults.results||[]).length && !loading" class="gradient-card rounded-2xl p-10 text-center text-surface-400">
+        No results found for "<span x-text="searchQ" class="text-white font-500"></span>"
+      </div>
+    </div>
+
+    <!-- ══════════════ TAXONOMY ══════════════ -->
+    <div x-show="page==='taxonomy'" class="space-y-6 animate-fade-in">
+      <div class="flex items-center justify-between">
+        <div>
+          <h2 class="text-xl font-700 text-white">PMI/CSC Taxonomy</h2>
+          <p class="text-sm text-surface-400 mt-0.5">Version <span class="text-brand-400" x-text="taxonomyVersion"></span> · <span x-text="(taxonomyThemes||[]).length"></span> themes across 7 domains</p>
+        </div>
+        <div class="flex gap-2">
+          <select x-model="taxLang" class="bg-surface-800 text-surface-300 text-xs px-3 py-1.5 rounded-lg border border-surface-700">
+            <option value="en">English</option><option value="cs">Czech</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-7 gap-3 mb-4">
+        <template x-for="d in domainColors" :key="d.name">
+          <button @click="taxDomainFilter=taxDomainFilter===d.name?'All':d.name"
+                  class="rounded-xl px-3 py-2 text-xs font-600 transition-all text-center"
+                  :style="`background:${taxDomainFilter===d.name?d.color+'33':d.color+'11'}; border:1px solid ${d.color}44; color:${d.color}`">
+            <span x-text="d.short"></span>
+          </button>
+        </template>
+      </div>
+
+      <div class="space-y-3">
+        <template x-for="theme in filteredTaxonomy" :key="theme.key">
+          <div class="gradient-card rounded-xl p-4 hover:border-brand-500/30 transition-colors" style="border:1px solid rgba(148,163,184,.08)">
+            <div class="flex items-start justify-between gap-4">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-600 text-white text-sm" x-text="taxLang==='cs'?theme.label_cs:theme.label_en"></span>
+                  <span x-show="theme.automation_eligible" class="badge badge-pos text-xs">⚡ Auto-eligible</span>
+                  <template x-for="b in (theme.behaviors||[])" :key="b">
+                    <span class="badge badge-info text-xs" x-text="b.replace(/_/g,' ')"></span>
+                  </template>
+                  <template x-for="c in (theme.compliance||[])" :key="c">
+                    <span class="badge badge-crit text-xs" x-text="c.replace(/_/g,' ')"></span>
+                  </template>
+                </div>
+                <div class="text-xs text-surface-400 mt-1">
+                  <span class="text-surface-500" x-text="theme.level1"></span>
+                  <span class="text-surface-600 mx-1">›</span>
+                  <span x-text="theme.level2"></span>
+                  <span x-show="theme.level3" class="text-surface-600 mx-1">›</span>
+                  <span x-show="theme.level3" x-text="theme.level3"></span>
+                </div>
+                <div class="mt-2 flex flex-wrap gap-1">
+                  <template x-for="s in (taxLang==='cs'?theme.seeds_cs:theme.seeds_en).slice(0,5)" :key="s">
+                    <span class="tag" x-text="s"></span>
+                  </template>
+                  <span x-show="(taxLang==='cs'?theme.seeds_cs:theme.seeds_en).length>5"
+                        class="text-xs text-surface-500"
+                        x-text="`+${(taxLang==='cs'?theme.seeds_cs:theme.seeds_en).length-5} more`"></span>
+                </div>
+              </div>
+              <div class="text-xs text-surface-500 flex-shrink-0" x-text="theme.key.replace('THEME_','')"></div>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- ALPINE.JS APP                                              -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script>
+function ciiApp() {
+  return {
+    page: 'overview',
+    lang: 'en',
+    loading: false,
+    loadingMsg: 'Loading...',
+    dataLoaded: false,
+    totalRows: 0,
+    filterMarket: 'All',
+    filterChannel: 'All',
+    filterDomain: 'All',
+    filterLang: 'All',
+    searchQ: '',
+    dsatOnly: false,
+    opsGroupBy: 'channel',
+    uploadSource: 'generic',
+    uploadStatus: '',
+    uploadError: false,
+    pipelineRunning: false,
+    pipelineSteps: [],
+    topicModal: false,
+    selectedTopic: '',
+    topicSamples: [],
+    topicSearch: '',
+    taxLang: 'en',
+    taxDomainFilter: 'All',
+    taxonomyVersion: '1.0.0',
+    taxonomyThemes: [],
+    alertCount: 0,
+
+    // Data stores
+    overview: {},
+    topics: [],
+    sentiment: {},
+    verbatims: [],
+    ops: {},
+    nps: {},
+    digital: {},
+    allAlerts: [],
+    searchResults: {},
+
+    // Charts registry
+    _charts: {},
+
+    navItems: [
+      { id:'overview',  label:'Overview',         icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>' },
+      { id:'topics',    label:'Themes Explorer',  icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>' },
+      { id:'sentiment', label:'Sentiment & DSAT', icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>' },
+      { id:'operations',label:'Operations (CSC)', icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>' },
+      { id:'nps',       label:'NPS Join View',    icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/></svg>' },
+      { id:'digital',   label:'Digital & Auto',   icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' },
+      { id:'alerts',    label:'Alerts',            icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>' },
+      { id:'search',    label:'Search & Q&A',      icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0"/></svg>' },
+      { id:'upload',    label:'Upload & Process',  icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>' },
+      { id:'taxonomy',  label:'Taxonomy',          icon:'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>' },
+    ],
+
+    domainColors: [
+      {name:'Product Experience',        short:'Product',  color:'#3b82f6'},
+      {name:'Service & Support (CSC)',   short:'CSC',      color:'#8b5cf6'},
+      {name:'Digital Experience',        short:'Digital',  color:'#06b6d4'},
+      {name:'Commerce & Fulfillment',    short:'Commerce', color:'#f59e0b'},
+      {name:'Program & Loyalty',         short:'Loyalty',  color:'#10b981'},
+      {name:'Channel Experience',        short:'Channel',  color:'#f97316'},
+      {name:'Policy & Compliance',       short:'Policy',   color:'#ef4444'},
+    ],
+
+    kpiCards: [],
+
+    async init() {
+      await this.loadAll()
+      await this.loadTaxonomy()
+    },
+
+    async loadAll() {
+      await this.loadOverview()
+      if (this.page === 'topics')     await this.loadTopics()
+      if (this.page === 'sentiment')  await this.loadSentiment()
+      if (this.page === 'operations') await this.loadOperations()
+      if (this.page === 'nps')        await this.loadNPS()
+      if (this.page === 'digital')    await this.loadDigital()
+      if (this.page === 'alerts')     await this.loadAlerts()
+    },
+
+    async setPage(id) {
+      this.page = id
+      await this.$nextTick()
+      if (id === 'overview')    { await this.loadOverview(); this.renderOverviewCharts() }
+      if (id === 'topics')      { await this.loadTopics();   this.renderTopicCharts() }
+      if (id === 'sentiment')   { await this.loadSentiment(); this.renderSentimentCharts() }
+      if (id === 'operations')  { await this.loadOperations(); this.renderOpsCharts() }
+      if (id === 'nps')         { await this.loadNPS();       this.renderNPSCharts() }
+      if (id === 'digital')     { await this.loadDigital();   this.renderDigitalCharts() }
+      if (id === 'alerts')      await this.loadAlerts()
+    },
+
+    currentPageTitle() {
+      return (this.navItems.find(n=>n.id===this.page)||{}).label || 'CII Platform'
+    },
+
+    async loadOverview() {
+      try {
+        const params = new URLSearchParams({market:this.filterMarket,channel:this.filterChannel})
+        const r = await fetch(`/api/overview?${params}`)
+        this.overview = await r.json()
+        const k = this.overview.kpis || {}
+        this.totalRows = k.total_interactions || 0
+        this.dataLoaded = true
+        this.alertCount = (this.overview.alerts||[]).length
+
+        this.kpiCards = [
+          {key:'vol',   label:'Total Interactions', value:(k.total_interactions||0).toLocaleString(), icon:'📊', bg:'rgba(59,130,246,.15)',  glow:'',         badge:'badge-info',delta:null},
+          {key:'nps',   label:'NPS Score',          value:k.nps||0,                                   icon:'⭐', bg:'rgba(16,185,129,.15)',  glow:'glow-green',badge:k.nps>=30?'badge-pos':'badge-neg',delta:k.nps>=30?'↑':'↓'},
+          {key:'csat',  label:'CSAT',               value:k.csat||0,                                  icon:'😊', bg:'rgba(139,92,246,.15)',  glow:'glow-purple',badge:'badge-pos',delta:null},
+          {key:'sent',  label:'Avg Sentiment',      value:(k.avg_sentiment||0).toFixed(2),            icon:'💬', bg:'rgba(6,182,212,.15)',   glow:'',         badge:k.avg_sentiment>0?'badge-pos':'badge-neg',delta:null},
+          {key:'dsat',  label:'DSAT Rate',          value:(k.dsat_rate||0)+'%',                       icon:'⚡', bg:'rgba(239,68,68,.15)',   glow:'glow-red',  badge:'badge-neg',delta:'↑'},
+          {key:'aht',   label:'Avg Handle Time',    value:(k.aht_min||0).toFixed(1)+' min',           icon:'⏱️', bg:'rgba(245,158,11,.15)',  glow:'',         badge:null,delta:null},
+        ]
+
+        await this.$nextTick()
+        if (this.page==='overview') this.renderOverviewCharts()
+      } catch(e) { console.error(e) }
+    },
+
+    async loadTopics() {
+      const params = new URLSearchParams({domain:this.filterDomain,market:this.filterMarket,lang:this.filterLang,channel:this.filterChannel})
+      const r = await fetch(`/api/topics?${params}`)
+      const d = await r.json()
+      this.topics = d.topics || []
+      await this.$nextTick()
+      this.renderTopicCharts()
+    },
+
+    async loadSentiment() {
+      const params = new URLSearchParams({market:this.filterMarket,channel:this.filterChannel,lang:this.filterLang})
+      const r = await fetch(`/api/sentiment?${params}`)
+      this.sentiment = await r.json()
+      this.verbatims = this.dsatOnly
+        ? (this.sentiment.negatives||[]).filter(v=>v.sentiment==='neg')
+        : (this.sentiment.negatives||[])
+      await this.$nextTick()
+      this.renderSentimentCharts()
+    },
+
+    applyVerbatimFilter() {
+      this.verbatims = this.dsatOnly
+        ? (this.sentiment.negatives||[]).filter(v=>v.sentiment==='neg')
+        : (this.sentiment.negatives||[])
+    },
+
+    async loadOperations() {
+      const r = await fetch(`/api/operations?group_by=${this.opsGroupBy}`)
+      this.ops = await r.json()
+      await this.$nextTick()
+      this.renderOpsCharts()
+    },
+
+    async loadNPS() {
+      const params = new URLSearchParams({market:this.filterMarket,channel:this.filterChannel})
+      const r = await fetch(`/api/nps?${params}`)
+      this.nps = await r.json()
+      await this.$nextTick()
+      this.renderNPSCharts()
+    },
+
+    async loadDigital() {
+      const r = await fetch('/api/digital')
+      this.digital = await r.json()
+      await this.$nextTick()
+      this.renderDigitalCharts()
+    },
+
+    async loadAlerts() {
+      const r = await fetch('/api/alerts')
+      const d = await r.json()
+      this.allAlerts = d.alerts || []
+      this.alertCount = this.allAlerts.length
+    },
+
+    async doSearch() {
+      if (!this.searchQ.trim()) return
+      this.loading = true; this.loadingMsg = 'Searching...'
+      try {
+        const r = await fetch(`/api/search?q=${encodeURIComponent(this.searchQ)}&top_k=20`)
+        this.searchResults = await r.json()
+        if (this.page !== 'search') this.page = 'search'
+      } finally { this.loading = false }
+    },
+
+    async showTopicSamples(label) {
+      this.selectedTopic = label
+      const r = await fetch(`/api/topics/${encodeURIComponent(label)}/samples?n=10`)
+      const d = await r.json()
+      this.topicSamples = d.samples || []
+      this.topicModal = true
+    },
+
+    async loadTaxonomy() {
+      const r = await fetch('/api/taxonomy')
+      const d = await r.json()
+      this.taxonomyThemes = d.themes || []
+      this.taxonomyVersion = d.version || '1.0.0'
+    },
+
+    async handleFileSelect(e) {
+      const file = e.target.files[0]
+      if (!file) return
+      await this.uploadFile(file)
+    },
+
+    async handleDrop(e) {
+      const file = e.dataTransfer.files[0]
+      if (!file) return
+      await this.uploadFile(file)
+    },
+
+    async uploadFile(file) {
+      const form = new FormData()
+      form.append('file', file)
+      form.append('source_system', this.uploadSource)
+      this.uploadStatus = 'Uploading...'
+      this.uploadError = false
+      try {
+        const r = await fetch('/api/upload', {method:'POST', body:form})
+        const d = await r.json()
+        if (r.ok) {
+          this.uploadStatus = `✅ ${d.message}`
+          this.totalRows = d.rows
+          await this.loadOverview()
+        } else {
+          this.uploadStatus = `❌ Error: ${d.detail}`
+          this.uploadError = true
+        }
+      } catch(e) {
+        this.uploadStatus = `❌ Upload failed: ${e.message}`
+        this.uploadError = true
+      }
+    },
+
+    async runPipeline() {
+      this.pipelineRunning = true
+      this.pipelineSteps = [
+        {name:'PII Redaction',status:'pending'},
+        {name:'Sentiment Analysis',status:'pending'},
+        {name:'Behavior Detection',status:'pending'},
+        {name:'Compliance Flags',status:'pending'},
+        {name:'Anomaly Detection',status:'pending'},
+      ]
+      try {
+        const r = await fetch('/api/pipeline/run', {method:'POST'})
+        const d = await r.json()
+        if (r.ok) {
+          this.pipelineSteps = d.steps
+          await this.loadOverview()
+        } else {
+          this.pipelineSteps = [{name:'Error',status:'error',message:d.detail}]
+        }
+      } catch(e) {
+        this.pipelineSteps = [{name:'Error',status:'error',message:e.message}]
+      } finally {
+        this.pipelineRunning = false
+      }
+    },
+
+    // ── Computed ────────────────────────────────────────
+    get filteredTopics() {
+      let t = this.topics
+      if (this.topicSearch) {
+        const q = this.topicSearch.toLowerCase()
+        t = t.filter(x => (x.topic_label||'').toLowerCase().includes(q))
+      }
+      return t
+    },
+
+    get domainBreakdown() {
+      const counts = {}
+      const total = this.topics.length || 1
+      for (const t of this.topics) {
+        const d = (t.l1_domain||'Other').split('(')[0].trim()
+        counts[d] = (counts[d]||0) + 1
+      }
+      return Object.entries(counts).map(([d,n]) => ({
+        domain: d, count: n, pct: Math.round(n/total*100),
+        color: (this.domainColors.find(x=>d.startsWith(x.name.split(' ')[0]))||{color:'#3b82f6'}).color
+      })).sort((a,b)=>b.count-a.count)
+    },
+
+    get filteredTaxonomy() {
+      let t = this.taxonomyThemes
+      if (this.taxDomainFilter !== 'All') {
+        t = t.filter(x => x.level1 === this.taxDomainFilter)
+      }
+      return t
+    },
+
+    sentPct(sentiment) {
+      const d = this.sentiment.distribution||{}
+      const total = d.total||1
+      return Math.round((d[sentiment]||0)/total*100)
+    },
+    dsatPct() {
+      const d = this.sentiment.distribution||{}
+      const total = d.total||1
+      return Math.round((d.dsat||0)/total*100)
+    },
+
+    behaviorColor(b) {
+      return {empathy:'#3b82f6',authentication:'#8b5cf6',resolution_confirmation:'#10b981',escalation:'#f59e0b',adverse_event:'#ef4444'}[b]||'#3b82f6'
+    },
+    heatColor(v) {
+      if (v>60) return '#10b981'
+      if (v>30) return '#f59e0b'
+      return '#ef4444'
+    },
+
+    // ── Chart rendering ──────────────────────────────────
+    _destroyChart(id) {
+      if (this._charts[id]) { this._charts[id].destroy(); delete this._charts[id] }
+    },
+
+    _mkChart(id, type, data, options={}) {
+      this._destroyChart(id)
+      const el = document.getElementById(id)
+      if (!el) return
+      const defaults = {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { labels: { color:'#94a3b8', font:{size:11,family:'Inter'} } } },
+        scales: type!=='pie'&&type!=='doughnut' ? {
+          x: { ticks:{color:'#64748b',font:{size:10}}, grid:{color:'rgba(148,163,184,.06)'} },
+          y: { ticks:{color:'#64748b',font:{size:10}}, grid:{color:'rgba(148,163,184,.06)'} }
+        } : {},
+      }
+      this._charts[id] = new Chart(el, { type, data, options: deepMerge(defaults, options) })
+    },
+
+    renderOverviewCharts() {
+      const vol = this.overview.volume_trend||[]
+      const labels = vol.map(v=>v.date?.slice(5))
+      const values = vol.map(v=>v.count)
+
+      this._mkChart('volumeChart','line',{
+        labels,
+        datasets:[{label:'Interactions',data:values,borderColor:'#3b82f6',backgroundColor:'rgba(59,130,246,.1)',fill:true,tension:.4,pointRadius:2,pointHoverRadius:5,borderWidth:2}]
+      })
+
+      const d = this.overview.kpis||{}
+      this._mkChart('sentimentDonut','doughnut',{
+        labels:['Positive','Neutral','Negative'],
+        datasets:[{data:[d.pos_pct,d.neu_pct,d.neg_pct],backgroundColor:['#10b981','#475569','#ef4444'],borderWidth:0,hoverOffset:6}]
+      },{plugins:{legend:{position:'bottom'}}})
+
+      const tops = (this.overview.top_topics||[]).slice(0,8)
+      this._mkChart('topicsChart','bar',{
+        labels: tops.map(t=>t.topic_label?.slice(0,22)+'…'),
+        datasets:[{
+          label:'Volume',data:tops.map(t=>t.volume),
+          backgroundColor: tops.map(t=>t.avg_sentiment>0.1?'rgba(16,185,129,.7)':t.avg_sentiment<-0.1?'rgba(239,68,68,.7)':'rgba(100,116,139,.5)'),
+          borderRadius:6,
+        }]
+      },{indexAxis:'y',plugins:{legend:{display:false}}})
+
+      const ch = this.overview.channels||[]
+      this._mkChart('channelChart','doughnut',{
+        labels:ch.map(c=>c.channel),
+        datasets:[{data:ch.map(c=>c.count),backgroundColor:['#3b82f6','#8b5cf6','#06b6d4','#f59e0b','#10b981'],borderWidth:0}]
+      },{plugins:{legend:{position:'right',labels:{font:{size:10}}}}})
+
+      const mk = this.overview.markets||[]
+      this._mkChart('marketChart','bar',{
+        labels:mk.map(m=>m.market),
+        datasets:[{label:'Volume',data:mk.map(m=>m.count),backgroundColor:'rgba(59,130,246,.6)',borderRadius:6}]
+      },{plugins:{legend:{display:false}}})
+    },
+
+    renderTopicCharts() {
+      const t = this.topics.slice(0,20)
+      this._mkChart('topicBubble','bubble',{
+        datasets:this.domainColors.map(d=>{
+          const dt = t.filter(x=>(x.l1_domain||'').includes(d.name.split(' ')[0]))
+          return {
+            label:d.short,
+            data:dt.map(x=>({x:x.avg_sentiment,y:x.volume,r:Math.max(4,Math.sqrt(x.volume)*2.5),label:x.topic_label})),
+            backgroundColor: d.color+'88',
+            borderColor: d.color,
+            borderWidth:1.5,
+          }
+        })
+      },{
+        plugins:{
+          legend:{position:'bottom',labels:{font:{size:10},usePointStyle:true}},
+          tooltip:{callbacks:{label:ctx=>`${ctx.raw.label}: ${ctx.raw.r?.toFixed(0)} vol`}}
+        },
+        scales:{
+          x:{title:{display:true,text:'Avg Sentiment',color:'#64748b',font:{size:10}},min:-1,max:1,ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(148,163,184,.06)'}},
+          y:{title:{display:true,text:'Volume',color:'#64748b',font:{size:10}},ticks:{color:'#64748b',font:{size:9}},grid:{color:'rgba(148,163,184,.06)'}},
+        }
+      })
+    },
+
+    renderSentimentCharts() {
+      const s = this.sentiment.dsat_topics||[]
+      this._mkChart('dsatChart','bar',{
+        labels:s.map(x=>x.topic_label?.slice(0,22)),
+        datasets:[{label:'DSAT Count',data:s.map(x=>x.count),backgroundColor:'rgba(239,68,68,.7)',borderRadius:6}]
+      },{indexAxis:'y',plugins:{legend:{display:false}}})
+
+      const byCh = this.sentiment.by_channel||[]
+      this._mkChart('sentChannelChart','bar',{
+        labels:byCh.map(x=>x.channel),
+        datasets:[{label:'Avg Sentiment',data:byCh.map(x=>x.avg_sentiment),
+          backgroundColor:byCh.map(x=>x.avg_sentiment>0?'rgba(16,185,129,.7)':'rgba(239,68,68,.7)'),borderRadius:6}]
+      },{plugins:{legend:{display:false}},scales:{y:{min:-1,max:1}}})
+
+      const byMk = this.sentiment.by_market||[]
+      this._mkChart('sentMarketChart','bar',{
+        labels:byMk.map(x=>x.market),
+        datasets:[{label:'Avg Sentiment',data:byMk.map(x=>x.avg_sentiment),
+          backgroundColor:byMk.map(x=>x.avg_sentiment>0?'rgba(16,185,129,.7)':'rgba(239,68,68,.7)'),borderRadius:6}]
+      },{plugins:{legend:{display:false}},scales:{y:{min:-1,max:1}}})
+    },
+
+    renderOpsCharts() {
+      const comp = this.ops.compliance||{}
+      const labels = Object.keys(comp).map(k=>k.replace(/_/g,' '))
+      const values = Object.values(comp)
+      const colors = Object.keys(comp).map(k=>
+        ['adverse_event','health_mention'].includes(k)?'rgba(239,68,68,.8)':'rgba(245,158,11,.7)'
+      )
+      this._mkChart('complianceChart','bar',{
+        labels,datasets:[{data:values,backgroundColor:colors,borderRadius:6}]
+      },{indexAxis:'y',plugins:{legend:{display:false}}})
+    },
+
+    renderNPSCharts() {
+      const t = this.nps.topics||[]
+      this._mkChart('npsScatterChart','bubble',{
+        datasets:[{
+          label:'Topics',
+          data:t.map(x=>({x:x.avg_sentiment,y:x.volume,r:Math.max(4,Math.sqrt(x.volume)*2.5),label:x.topic_label,nps:x.topic_nps})),
+          backgroundColor:'rgba(59,130,246,.6)',borderColor:'#3b82f6',borderWidth:1,
+        }]
+      },{
+        plugins:{tooltip:{callbacks:{label:ctx=>`${ctx.raw.label} | vol:${ctx.raw.r?.toFixed(0)} NPS:${ctx.raw.nps}`}}},
+        scales:{
+          x:{title:{display:true,text:'Sentiment',color:'#64748b'},min:-1,max:1},
+          y:{title:{display:true,text:'Volume',color:'#64748b'}},
+        }
+      })
+
+      const nm = this.nps.nps_by_market||[]
+      this._mkChart('npsMarketChart','bar',{
+        labels:nm.map(x=>x.market),
+        datasets:[{label:'NPS',data:nm.map(x=>x.nps),
+          backgroundColor:nm.map(x=>x.nps>=40?'rgba(16,185,129,.7)':x.nps>=20?'rgba(245,158,11,.7)':'rgba(239,68,68,.7)'),borderRadius:6}]
+      },{plugins:{legend:{display:false}}})
+    },
+
+    renderDigitalCharts() {
+      this._mkChart('mannedDigitalChart','doughnut',{
+        labels:['Digital (Chat/Review/NPS)','Manned (Call/Email)'],
+        datasets:[{data:[this.digital.digital||0,this.digital.manned||0],
+          backgroundColor:['rgba(59,130,246,.8)','rgba(139,92,246,.8)'],borderWidth:0,hoverOffset:8}]
+      },{plugins:{legend:{position:'bottom',labels:{font:{size:10}}}}})
+    },
+  }
+}
+
+function deepMerge(target, source) {
+  const out = Object.assign({}, target)
+  for (const k in source) {
+    if (source[k] && typeof source[k]==='object' && !Array.isArray(source[k])) {
+      out[k] = deepMerge(target[k]||{}, source[k])
+    } else {
+      out[k] = source[k]
+    }
+  }
+  return out
+}
+</script>
+</body>
+</html>

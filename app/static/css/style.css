@@ -1,0 +1,17 @@
+/* CII Platform — supplementary styles */
+
+/* Custom scrollbar */
+* { scrollbar-width: thin; scrollbar-color: #334155 #1e293b; }
+
+/* Chart.js canvas sharpness */
+canvas { image-rendering: -webkit-optimize-contrast; }
+
+/* Line clamp utilities */
+.line-clamp-2 { display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+.line-clamp-1 { display:-webkit-box; -webkit-line-clamp:1; -webkit-box-orient:vertical; overflow:hidden; }
+
+/* Glassmorphism tooltip */
+[title] { cursor:help; }
+
+/* Smooth transitions for Alpine.js shows */
+[x-show] { transition: opacity .2s ease, transform .2s ease; }
